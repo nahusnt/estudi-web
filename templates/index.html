@@ -17,14 +17,24 @@
 
     
     <ul>
-        {% for tarea in tareas %}
-            <li>
-                {{ tarea.titulo }}
-                <a href="/eliminar/{{ tarea.id }}">[ Eliminar ]</a>
-            </li>
-        {% else %}
-            <li>No hay tareas registradas.</li>
-        {% endfor %}
-    </ul>
+  {% for tarea in tareas %}
+    <li style="margin-bottom: 8px;">
+      
+      <form action="/toggle/{{ tarea.id }}" method="POST" style="display:inline;">
+        <input type="checkbox" onChange="this.form.submit()" {% if tarea.completada %}checked{% endif %}>
+      </form>
+
+    
+      <span style="{% if tarea.completada %}text-decoration: line-through; color: gray;{% endif %}">
+        {{ tarea.titulo }}
+      </span>
+
+      
+      <form action="/eliminar/{{ tarea.id }}" method="POST" style="display:inline; margin-left: 10px;">
+        <button type="submit" style="background: none; border: none; color: red; font-weight: bold; cursor: pointer;" title="Eliminar tarea">X</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
 </body>
 </html>

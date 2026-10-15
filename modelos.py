@@ -43,6 +43,14 @@ class RepositorioTareas:
             )
             lista.agregar(t)
         return lista.obtener_todas()
+    def cambiar_estado(self, id_tarea):
+        tarea_doc = self.coleccion.find_one({"_id": ObjectId(id_tarea)})
+        if tarea_doc:
+            nuevo_estado = not tarea_doc.get("completada", False)
+            self.coleccion.update_one(
+                {"_id": ObjectId(id_tarea)},
+                {"$set": {"completada": nuevo_estado}}
+            )
 
     def eliminar(self, id_tarea):
         self.coleccion.delete_one({'_id': ObjectId(id_tarea)})
