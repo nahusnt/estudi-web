@@ -31,7 +31,7 @@ def agregar():
 
 @app.route('/toggle/<id_tarea>', methods=['POST'])
 def toggle_tarea(id_tarea):
-    # Lógica para invertir el estado 'completada' (True/False) en la BD
+    
     repo.cambiar_estado(id_tarea)
     return redirect(url_for('index'))
 
