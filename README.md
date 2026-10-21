@@ -94,3 +94,50 @@ Si aparece `bad auth : authentication failed`, revisa el usuario y la contraseñ
 - Santiago Nahuel Thomas
 - Luciana Centurion
 - Santiago Sebastian Ojeda
+
+## Clonar y preparar el repositorio con Git
+
+1. Abre una terminal en la carpeta donde quieras guardar el proyecto.
+2. Clona el repositorio y entra en la carpeta creada:
+
+```powershell
+git clone https://github.com/nahusnt/lista-tareas-personal.git
+cd lista-tareas-personal
+```
+
+3. Comprueba que Git reconoce el repositorio:
+
+```powershell
+git status
+```
+
+4. Sigue los pasos de [Instalacion](#instalacion) para crear el entorno virtual, instalar las dependencias y configurar `.env`.
+
+## Subir tus cambios con Git
+
+1. Desde la carpeta del proyecto, revisa los archivos modificados:
+
+```powershell
+git status
+```
+
+2. Prepara los cambios y verifica lo que vas a incluir:
+
+```powershell
+git add .
+git diff --cached
+```
+
+No agregues `.env`: contiene credenciales locales y esta excluido por `.gitignore`.
+
+3. Crea un commit con un mensaje descriptivo:
+
+```powershell
+git commit -m "Describe brevemente los cambios"
+```
+
+4. Sube el commit a la rama principal:
+
+```powershell
+git push origin main
+```

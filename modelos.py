@@ -1,5 +1,7 @@
 from bson import ObjectId
 
+
+# Representa una tarea y su formato de almacenamiento.
 class Tarea:
     def __init__(self, titulo, completada=False, id_tarea=None):
         self.id = id_tarea
@@ -13,19 +15,11 @@ class Tarea:
             "completada": self.completada
         }
 
-class ListaTareas:
-    def __init__(self):
-        self.tareas = []
 
-    def agregar(self, tarea):
-        self.tareas.append(tarea)
-
-    def obtener_todas(self):
-        return self.tareas
-
+# Centraliza las consultas y modificaciones de tareas en MongoDB.
 class RepositorioTareas:
     def __init__(self, db):
-        self.coleccion = db['tareas']
+        self.coleccion = db["tareas"]
 
     def guardar(self, tarea):
         resultado = self.coleccion.insert_one(tarea.a_diccionario())
@@ -33,24 +27,31 @@ class RepositorioTareas:
         return tarea
 
     def cargar_todas(self):
-        lista = ListaTareas()
-        documentos = self.coleccion.find()
-        for doc in documentos:
-            t = Tarea(
-                titulo=doc['titulo'],
-                completada=doc.get('completada', False),
-                id_tarea=str(doc['_id'])
+        # Recupera solo los campos usados por la vista y evita una lista intermedia.
+        documentos = self.coleccion.find({}, {"titulo": 1, "completada": 1})
+        return [
+            Tarea(
+                titulo=doc["titulo"],
+                completada=doc.get("completada", False),
+                id_tarea=str(doc["_id"]),
             )
-            lista.agregar(t)
-        return lista.obtener_todas()
+            for doc in documentos
+        ]
+
     def cambiar_estado(self, id_tarea):
-        tarea_doc = self.coleccion.find_one({"_id": ObjectId(id_tarea)})
-        if tarea_doc:
-            nuevo_estado = not tarea_doc.get("completada", False)
-            self.coleccion.update_one(
-                {"_id": ObjectId(id_tarea)},
-                {"$set": {"completada": nuevo_estado}}
-            )
+        # Invierte el estado de forma atomica en una sola operacion de MongoDB.
+        self.coleccion.update_one(
+            {"_id": ObjectId(id_tarea)},
+            [
+                {
+                    "$set": {
+                        "completada": {
+                            "$not": [{"$ifNull": ["$completada", False]}]
+                        }
+                    }
+                }
+            ],
+        )
 
     def eliminar(self, id_tarea):
-        self.coleccion.delete_one({'_id': ObjectId(id_tarea)})
+        self.coleccion.delete_one({"_id": ObjectId(id_tarea)})
