@@ -2,5 +2,4 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-.env
-generar_datos_masivos.py
+
