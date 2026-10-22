@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB Atlas">
   </p>
 
-  <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
+  <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#android">📱 Android</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
 </div>
 
 ---
@@ -30,6 +30,16 @@
 </p>
 
 <p align="center"><sub>☀️ Modo claro · 🌙 Modo oscuro · Una lista más ordenada, a tu manera</sub></p>
+
+<a id="android"></a>
+
+## 📱 También en Android
+
+¿Prefieres organizarte desde el móvil? Explora la versión de Estudi disponible para Android:
+
+<p align="center">
+  <a href="https://github.com/nahusnt/estudi-app"><strong>🤖 Visitar Estudi para Android en GitHub →</strong></a>
+</p>
 
 ## ✨ Lo que puedes hacer
 
