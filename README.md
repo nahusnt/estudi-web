@@ -12,6 +12,22 @@ El usuario podrá:
 - Marcar tareas como completadas.
 - Eliminar tareas.
 - Mantener las tareas guardadas.
+- Filtrar por estado, categoría y etiqueta, y ordenar por fecha o título.
+- Clasificar tareas en Trabajo, Personal, Estudio u Otro y agregar hasta cinco etiquetas.
+- Alternar entre modo claro y oscuro; la preferencia se guarda en el navegador.
+
+## Vista previa
+
+El README de GitHub no admite carruseles interactivos; puedes abrir cada imagen para verla en grande.
+
+<p align="center">
+  <a href="./images/vista-clara.svg">
+    <img src="./images/vista-clara.svg" alt="Vista previa de la aplicación en modo claro" width="49%">
+  </a>
+  <a href="./images/vista-oscura.svg">
+    <img src="./images/vista-oscura.svg" alt="Vista previa de la aplicación en modo oscuro" width="49%">
+  </a>
+</p>
 
 ## Tecnologias
 
