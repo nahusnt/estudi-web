@@ -33,7 +33,8 @@ Estudi Web mantiene lo importante a mano y deja que cada persona organice su lis
 - Añadir hasta cinco etiquetas por tarea.
 - Filtrar por estado, categoría o etiqueta, y ordenar por fecha o título.
 - Elegir entre modo claro y oscuro; la preferencia queda guardada en el navegador.
-- Mantener tus tareas guardadas en MongoDB.
+- Mantener tus tareas guardadas en MongoDB (Tanto tu propia base de datos como otra externa).
+
 
 ## Tecnologías
 
@@ -120,9 +121,9 @@ Si aparece `bad auth : authentication failed`, revisa el usuario y la contraseñ
 
 ## Equipo
 
-- Santiago Nahuel Thomas
-- Luciana Centurion
-- Santiago Sebastian Ojeda
+- Santiago Nahuel Thomas - Encargado del Backend
+- Luciana Centurion - Encargada de la Documentación
+- Santiago Sebastian Ojeda - Encargado del Frontend
 
 ## Contribuir
 
