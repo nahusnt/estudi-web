@@ -51,7 +51,13 @@ Estudi Web mantiene lo importante a mano y deja que cada persona organice su lis
 
 ### Instalación
 
-1. Clona el repositorio y abre una terminal en la carpeta del proyecto.
+1. Clona el repositorio y entra en la carpeta:
+
+   ```bash
+   git clone https://github.com/nahusnt/estudi-web.git
+   cd estudi-web
+   ```
+
 2. Crea y activa un entorno virtual:
 
    **Windows PowerShell**
