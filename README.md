@@ -125,6 +125,25 @@ Si aparece `bad auth : authentication failed`, revisa el usuario y la contraseñ
 - Luciana Centurion - Encargada de la Documentación
 - Santiago Sebastian Ojeda - Encargado del Frontend
 
+## 🔄 Mantener tu copia al día
+
+Antes de empezar a trabajar, actualiza tu copia local para incluir los cambios más recientes del repositorio. Si ya tienes cambios propios, guárdalos con un commit o con `git stash` antes de cambiar de rama.
+
+```bash
+git switch main
+git pull --ff-only origin main
+```
+
+Si trabajas en otra rama, vuelve a ella y mézclale la versión más reciente de `main` antes de subir tus cambios:
+
+```bash
+git switch nombre-de-tu-rama
+git fetch origin
+git merge origin/main
+```
+
+Resuelve cualquier conflicto y prueba tus cambios antes de hacer `git push`. Así trabajamos todos sobre una base actualizada. ✨
+
 ## Contribuir
 
 1. Revisa los archivos modificados:
