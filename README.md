@@ -16,9 +16,7 @@ El usuario podrá:
 - Clasificar tareas en Trabajo, Personal, Estudio u Otro y agregar hasta cinco etiquetas.
 - Alternar entre modo claro y oscuro; la preferencia se guarda en el navegador.
 
-## Vista previa
-
-El README de GitHub no admite carruseles interactivos; puedes abrir cada imagen para verla en grande.
+## Vista previa (¡Sujeto a cambios futuros!)
 
 <p align="center">
   <a href="./images/vista-clara.svg">
