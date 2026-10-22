@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f6fb">
-    <title>Mis tareas</title>
+    <meta name="description" content="Estudi Web: un espacio sencillo para organizar tus tareas, categorías y etiquetas.">
+    <title>Estudi Web | Organiza tu día</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
 </head>
 <body>
     <main class="app-shell">
         <header class="page-header">
-            <div>
-                <p class="eyebrow">ORGANIZA TU DÍA</p>
-                <h1>Mis tareas</h1>
-                <p class="subtitle">Un paso a la vez. Mantén todo bajo control.</p>
+            <div class="brand-lockup">
+                <img class="brand-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo de Estudi Web">
+                <div>
+                    <p class="eyebrow">ORGANIZA TU DÍA</p>
+                    <h1>Estudi Web</h1>
+                    <p class="subtitle">Un espacio sencillo para tus ideas y pendientes.</p>
+                </div>
             </div>
             <button class="button button-quiet" id="theme-toggle" type="button" aria-label="Activar modo oscuro">
                 <span aria-hidden="true">◐</span> <span id="theme-label">Modo oscuro</span>

@@ -1,157 +1,149 @@
-# Lista de Tareas Personal
+<div align="center">
+  <img src="./static/images/logo.png" alt="Logo de Estudi Web" width="112">
+  <h1>Estudi Web</h1>
+  <p><strong>Tu día, más claro. Tus pendientes, en orden.</strong></p>
+  <p>Una app web ligera para organizar tareas personales con categorías, etiquetas y filtros.</p>
 
-Proyecto Final Integrador de Programacion II + Bases de Datos II.
+  <p>
+    <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10 o posterior">
+    <img src="https://img.shields.io/badge/Flask-3.x-000000?style=flat-square&logo=flask&logoColor=white" alt="Flask 3">
+    <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB Atlas">
+  </p>
+</div>
 
-## Descripcion
+---
 
-Aplicacion web para administrar tareas personales.
+## Un vistazo
 
-El usuario podrá:
-
-- Agregar tareas.
-- Marcar tareas como completadas.
-- Eliminar tareas.
-- Mantener las tareas guardadas.
-- Filtrar por estado, categoría y etiqueta, y ordenar por fecha o título.
-- Clasificar tareas en Trabajo, Personal, Estudio u Otro y agregar hasta cinco etiquetas.
-- Alternar entre modo claro y oscuro; la preferencia se guarda en el navegador.
-
-## Vista previa (¡Sujeto a cambios futuros!)
+Estudi Web mantiene lo importante a mano y deja que cada persona organice su lista a su manera.
 
 <p align="center">
   <a href="./images/vista-clara.svg">
-    <img src="./images/vista-clara.svg" alt="Vista previa de la aplicación en modo claro" width="49%">
+    <img src="./images/vista-clara.svg" alt="Estudi Web en modo claro" width="49%">
   </a>
   <a href="./images/vista-oscura.svg">
-    <img src="./images/vista-oscura.svg" alt="Vista previa de la aplicación en modo oscuro" width="49%">
+    <img src="./images/vista-oscura.svg" alt="Estudi Web en modo oscuro" width="49%">
   </a>
 </p>
 
-## Tecnologias
+## Lo que puedes hacer
 
-- Python
-- Flask
-- MongoDB
-- HTML
-- CSS
-- JavaScript
+- Crear tareas y marcarlas como completadas.
+- Clasificar cada pendiente como Trabajo, Personal, Estudio u Otro.
+- Añadir hasta cinco etiquetas por tarea.
+- Filtrar por estado, categoría o etiqueta, y ordenar por fecha o título.
+- Elegir entre modo claro y oscuro; la preferencia queda guardada en el navegador.
+- Mantener tus tareas guardadas en MongoDB.
 
-## Requisitos
+## Tecnologías
+
+| Aplicación | Datos |
+| --- | --- |
+| Python y Flask | MongoDB Atlas y PyMongo |
+| HTML, CSS y JavaScript | Variables de entorno con `python-dotenv` |
+
+## Empezar
+
+### Requisitos
 
 - Python 3.10 o posterior.
 - Una cuenta de MongoDB Atlas con un usuario de base de datos y acceso de red configurados.
 
-## Instalacion
+### Instalación
 
 1. Clona el repositorio y abre una terminal en la carpeta del proyecto.
-2. Crea y activa un entorno virtual.
+2. Crea y activa un entorno virtual:
 
-En Windows PowerShell:
+   **Windows PowerShell**
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
 
-En macOS o Linux:
+   **macOS o Linux**
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
 
 3. Instala las dependencias:
 
-```bash
-python -m pip install -r requirements.txt
-```
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
 
-4. Copia la plantilla a `.env`.
+4. Crea tu archivo local de configuración:
 
-En Windows PowerShell:
+   **Windows PowerShell**
 
-```powershell
-Copy-Item .env.example .env
-```
+   ```powershell
+   Copy-Item .env.example .env
+   ```
 
-En macOS o Linux:
+   **macOS o Linux**
 
-```bash
-cp .env.example .env
-```
+   ```bash
+   cp .env.example .env
+   ```
 
-Abre `.env` y completa `MONGO_URI` con la URI de tu cluster de Atlas.
+   Abre `.env` y configura `MONGO_URI` con la URI de tu clúster de Atlas.
+
 5. Inicia la aplicación:
 
-```bash
-python app.py
-```
+   ```bash
+   python app.py
+   ```
 
-Abre `http://127.0.0.1:5000` en el navegador.
+6. Visita [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 ## Configurar MongoDB Atlas
 
-En Atlas, crea un usuario de base de datos con permisos de lectura y escritura, y agrega la IP de tu computadora en **Network Access**. El usuario de base de datos es distinto de tu usuario para iniciar sesión en Atlas.
+En Atlas, crea un usuario de base de datos con permisos de lectura y escritura y agrega la IP de tu computadora en **Network Access**. Este usuario es distinto de tu usuario para iniciar sesión en Atlas.
 
-La plantilla de `.env.example` tiene este formato:
+La plantilla `.env.example` muestra el formato esperado:
 
 ```dotenv
-MONGO_URI=mongodb+srv://USUARIO:CONTRASENA_CODIFICADA@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=lista-tareas-personal
+MONGO_URI=mongodb+srv://usuario:contraseña@cluster0.xxxxx.mongodb.net/
 ```
 
-Reemplaza los valores de ejemplo por los de **Connect > Drivers** en Atlas. Si la contraseña contiene caracteres especiales como `@`, `:`, `/` o `#`, codifícala para URL antes de colocarla en la URI. No compartas ni subas tu `.env`; cada computadora debe configurar sus propias credenciales.
+Reemplaza los valores de ejemplo por los de **Connect > Drivers** en Atlas. Si la contraseña contiene caracteres especiales como `@`, `:`, `/` o `#`, codifícala para URL antes de colocarla en la URI. No compartas ni subas tu `.env`: contiene credenciales locales.
 
-Si aparece `bad auth : authentication failed`, revisa el usuario y la contraseña del usuario de base de datos y actualiza la URI. Si aparece un error de conexión o timeout, revisa **Network Access** y la conexión a Internet.
+Si aparece `bad auth : authentication failed`, revisa el usuario y la contraseña de la base de datos y actualiza la URI. Si aparece un error de conexión o timeout, revisa **Network Access** y tu conexión a Internet.
 
-## Integrantes
+## Equipo
 
 - Santiago Nahuel Thomas
 - Luciana Centurion
 - Santiago Sebastian Ojeda
 
-## Clonar y preparar el repositorio con Git
+## Contribuir
 
-1. Abre una terminal en la carpeta donde quieras guardar el proyecto.
-2. Clona el repositorio y entra en la carpeta creada:
+1. Revisa los archivos modificados:
 
-```powershell
-git clone https://github.com/nahusnt/lista-tareas-personal.git
-cd lista-tareas-personal
-```
+   ```bash
+   git status
+   ```
 
-3. Comprueba que Git reconoce el repositorio:
+2. Prepara los cambios y comprueba lo que vas a incluir:
 
-```powershell
-git status
-```
+   ```bash
+   git add .
+   git diff --cached
+   ```
 
-4. Sigue los pasos de [Instalacion](#instalacion) para crear el entorno virtual, instalar las dependencias y configurar `.env`.
+   No agregues `.env`: contiene credenciales locales y está excluido por `.gitignore`.
 
-## Subir tus cambios con Git
+3. Crea un commit con un mensaje descriptivo y sube los cambios:
 
-1. Desde la carpeta del proyecto, revisa los archivos modificados:
+   ```bash
+   git commit -m "Describe brevemente los cambios"
+   git push origin main
+   ```
 
-```powershell
-git status
-```
+---
 
-2. Prepara los cambios y verifica lo que vas a incluir:
-
-```powershell
-git add .
-git diff --cached
-```
-
-No agregues `.env`: contiene credenciales locales y esta excluido por `.gitignore`.
-
-3. Crea un commit con un mensaje descriptivo:
-
-```powershell
-git commit -m "Describe brevemente los cambios"
-```
-
-4. Sube el commit a la rama principal:
-
-```powershell
-git push origin main
-```
+<div align="center">
+  Hecho con cariño para que organizarse se sienta un poco más fácil.
+</div>
