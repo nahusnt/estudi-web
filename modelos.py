@@ -108,6 +108,7 @@ class Tarea:
 class RepositorioTareas:
     def __init__(self, db):
         self.__coleccion = db["tareas"]
+        self.__coleccion.create_index("titulo")
 
     def guardar(self, tarea):
         resultado = self.__coleccion.insert_one(tarea.a_diccionario())
