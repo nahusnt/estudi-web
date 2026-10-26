@@ -20,7 +20,7 @@
     <main class="app-shell">
         <header class="page-header">
             <div class="brand-lockup">
-                <img class="brand-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo de Estudi Web">
+                <span class="brand-logo" role="img" aria-label="Logo de Estudi Web"></span>
                 <div>
                     <p class="eyebrow"><span class="sparkle" aria-hidden="true"></span> Organiza tu día</p>
                     <h1 class="chrome-title">Estudi Web</h1>
@@ -217,9 +217,36 @@
                             <option value="light">Claro</option>
                         </select>
                     </label>
+                    <label class="setting-row" for="palette-setting">
+                        <span><strong>Personalización de color</strong><small>Elige el ambiente cromático de la web y del logo.</small></span>
+                        <select id="palette-setting" aria-label="Paleta de color">
+                            <option value="violet">Holográfica</option>
+                            <option value="ocean">Océano</option>
+                            <option value="sunset">Atardecer</option>
+                            <option value="mint">Menta</option>
+                            <option value="citrus">Cítrico</option>
+                            <option value="berry">Frambuesa</option>
+                        </select>
+                    </label>
+                    <label class="setting-row" for="text-size-setting">
+                        <span><strong>Tamaño del texto</strong><small>Haz la lectura más cómoda.</small></span>
+                        <select id="text-size-setting" aria-label="Tamaño del texto">
+                            <option value="normal">Normal</option>
+                            <option value="large">Grande</option>
+                            <option value="x-large">Muy grande</option>
+                        </select>
+                    </label>
                     <label class="setting-row" for="density-setting">
                         <span><strong>Lista compacta</strong><small>Reduce el espacio entre las tareas.</small></span>
                         <input id="density-setting" type="checkbox">
+                    </label>
+                    <label class="setting-row" for="contrast-setting">
+                        <span><strong>Contraste reforzado</strong><small>Aumenta la diferencia entre texto y fondo.</small></span>
+                        <input id="contrast-setting" type="checkbox">
+                    </label>
+                    <label class="setting-row" for="motion-setting">
+                        <span><strong>Animaciones</strong><small>Activa las transiciones y efectos visuales.</small></span>
+                        <input id="motion-setting" type="checkbox" checked>
                     </label>
                 </div>
             </div>

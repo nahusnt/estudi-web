@@ -1,11 +1,22 @@
 // ---------- Modo oscuro / claro ----------
 // El diseño nace oscuro (estética Y2K). El modo claro se guarda en localStorage.
 const CLAVE_TEMA = "tema-lista-tareas";
+const CLAVE_PALETA = "paleta-lista-tareas";
 const CLAVE_LISTA_COMPACTA = "lista-tareas-compacta";
+const CLAVE_TAMANO_TEXTO = "tamano-texto-lista-tareas";
+const CLAVE_CONTRASTE = "contraste-lista-tareas";
+const CLAVE_ANIMACIONES = "animaciones-lista-tareas";
 const themeButton = document.querySelector("#theme-toggle");
 const themeLabel = document.querySelector("#theme-label");
 const themeSetting = document.querySelector("#theme-setting");
+const paletteSetting = document.querySelector("#palette-setting");
+const textSizeSetting = document.querySelector("#text-size-setting");
 const densitySetting = document.querySelector("#density-setting");
+const contrastSetting = document.querySelector("#contrast-setting");
+const motionSetting = document.querySelector("#motion-setting");
+
+const PALETAS_VALIDAS = ["violet", "ocean", "sunset", "mint", "citrus", "berry"];
+const TAMANOS_VALIDOS = ["normal", "large", "x-large"];
 
 function leerTemaGuardado() {
     try {
@@ -24,9 +35,25 @@ function aplicarTema(tema) {
 }
 
 aplicarTema(leerTemaGuardado() === "light" ? "light" : "dark");
+const paletaGuardada = leerPreferencia(CLAVE_PALETA);
+const paletaInicial = PALETAS_VALIDAS.includes(paletaGuardada) ? paletaGuardada : "violet";
+document.documentElement.dataset.palette = paletaInicial;
+paletteSetting.value = paletaInicial;
+
+const tamanoGuardado = leerPreferencia(CLAVE_TAMANO_TEXTO);
+const tamanoInicial = TAMANOS_VALIDOS.includes(tamanoGuardado) ? tamanoGuardado : "normal";
+document.documentElement.dataset.textSize = tamanoInicial;
+textSizeSetting.value = tamanoInicial;
+
 document.documentElement.dataset.density =
     leerPreferencia(CLAVE_LISTA_COMPACTA) === "true" ? "compact" : "comfortable";
 densitySetting.checked = document.documentElement.dataset.density === "compact";
+document.documentElement.dataset.contrast =
+    leerPreferencia(CLAVE_CONTRASTE) === "true" ? "high" : "normal";
+contrastSetting.checked = document.documentElement.dataset.contrast === "high";
+document.documentElement.dataset.motion =
+    leerPreferencia(CLAVE_ANIMACIONES) === "false" ? "off" : "on";
+motionSetting.checked = document.documentElement.dataset.motion !== "off";
 
 themeButton.addEventListener("click", () => {
     const nuevo = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
@@ -41,9 +68,31 @@ themeSetting.addEventListener("change", () => {
     guardarPreferencia(CLAVE_TEMA, themeSetting.value);
 });
 
+paletteSetting.addEventListener("change", () => {
+    const paleta = PALETAS_VALIDAS.includes(paletteSetting.value) ? paletteSetting.value : "violet";
+    document.documentElement.dataset.palette = paleta;
+    guardarPreferencia(CLAVE_PALETA, paleta);
+});
+
+textSizeSetting.addEventListener("change", () => {
+    const tamano = TAMANOS_VALIDOS.includes(textSizeSetting.value) ? textSizeSetting.value : "normal";
+    document.documentElement.dataset.textSize = tamano;
+    guardarPreferencia(CLAVE_TAMANO_TEXTO, tamano);
+});
+
 densitySetting.addEventListener("change", () => {
     document.documentElement.dataset.density = densitySetting.checked ? "compact" : "comfortable";
     guardarPreferencia(CLAVE_LISTA_COMPACTA, String(densitySetting.checked));
+});
+
+contrastSetting.addEventListener("change", () => {
+    document.documentElement.dataset.contrast = contrastSetting.checked ? "high" : "normal";
+    guardarPreferencia(CLAVE_CONTRASTE, String(contrastSetting.checked));
+});
+
+motionSetting.addEventListener("change", () => {
+    document.documentElement.dataset.motion = motionSetting.checked ? "on" : "off";
+    guardarPreferencia(CLAVE_ANIMACIONES, String(motionSetting.checked));
 });
 
 function leerPreferencia(clave) {
