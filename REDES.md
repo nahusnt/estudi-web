@@ -1,59 +1,31 @@
 # REDES
 
-## Diagrama de red
+## Diagrama de topología
 
-```text
-                           +-----------------------+
-                           |       Internet        |
-                           +-----------+-----------+
-                                       |
-                                       |
-                              +--------v--------+
-                              |  Router/Gateway |
-                              +--------+--------+
-                                       |
-                  +--------------------+--------------------+
-                  |                                         |
-          +-------v-------+                         +-------v-------+
-          | VLAN 10       |                         | VLAN 20       |
-          | Servidores    |                         | Usuarios      |
-          | 192.168.10.0/28 |                      | 192.168.20.0/24 |
-          +-------+-------+                         +-------+-------+
-                  |                                         |
-                  |                                         |
-          +-------v-------+                         +-------v-------+
-          | App Flask     |                         | Cliente Web   |
-          | 192.168.10.11 |                         | 192.168.20.X |
-          | Puerto 5000   |                         | Navegador     |
-          +---------------+                         +---------------+
-                  |
-                  |
-                  v
-          +-------------------------------+
-          | MongoDB Atlas / Base de datos |
-          | (Servicios en la nube)        |
-          +-------------------------------+
-```
+![Topología de red del proyecto Lista de Tareas](./images/diagrama-redes.png)
 
-### Descripción
+## Diseño y justificación
 
-- La aplicación Estudi Web se ejecuta localmente con Flask en el servidor de desarrollo.
-- Los clientes acceden desde la red interna o desde Internet mediante el gateway.
-- La capa de datos se almacena en MongoDB Atlas, por lo que la red local solo requiere acceso de salida a la base de datos remota.
-- La segmentación por VLAN facilita la administración, seguridad y mantenimiento del entorno.
+La red está pensada para una PyME de desarrollo de software y consultoría que despliega la aplicación Lista de Tareas. Utiliza una topología de estrella extendida con segmentación lógica por VLAN.
+
+La topología centraliza las conexiones en el router y el switch administrable, facilita la gestión del tráfico y permite aislar fallas de los puestos finales. También permite sumar puestos sin modificar la estructura principal. El router realiza el enrutamiento entre VLAN y brinda salida a Internet; el switch se conecta al router mediante un enlace troncal.
+
+## Componentes y segmentos
+
+- **VLAN 10 – Servidores:** contiene el servidor de aplicación Flask y el servidor de base de datos MongoDB. Se reservan direcciones estáticas para estos equipos.
+- **VLAN 20 – PCs cableadas:** conecta los puestos de trabajo por Ethernet. Las direcciones se asignan dinámicamente mediante DHCP.
+- **VLAN 30 – Wi-Fi Staff:** corresponde al SSID corporativo del punto de acceso. Las direcciones se asignan mediante DHCP.
+- **VLAN 40 – Wi-Fi Invitados:** corresponde al SSID para invitados, separado del tráfico corporativo. Las direcciones se asignan mediante DHCP.
+
+El punto de acceso se conecta al switch y separa las redes inalámbricas corporativa y de invitados en sus respectivas VLAN.
 
 ## Tabla de direccionamiento
 
 | VLAN (ID y nombre) | Red / Prefijo | Máscara | Rango de hosts | Gateway | Hosts útiles |
-|---|---|---|---|---|---|
-| 10 – Servidores | 192.168.10.0/28 | 255.255.255.240 | 192.168.10.1 - 192.168.10.14 | 192.168.10.1 | 14 |
-| 20 – Usuarios | 192.168.20.0/24 | 255.255.255.0 | 192.168.20.1 - 192.168.20.254 | 192.168.20.1 | 254 |
-| 30 – Gestión | 192.168.30.0/26 | 255.255.255.192 | 192.168.30.1 - 192.168.30.62 | 192.168.30.1 | 62 |
-| 40 – Wi‑Fi | 192.168.40.0/27 | 255.255.255.224 | 192.168.40.1 - 192.168.40.30 | 192.168.40.1 | 30 |
+|---|---|---|---|---|---:|
+| VLAN 10 – Servidores | 192.168.10.0/24 | 255.255.255.0 | 192.168.10.2–192.168.10.50 (estáticas) | 192.168.10.1 | 254 |
+| VLAN 20 – PCs cableadas | 192.168.20.0/24 | 255.255.255.0 | 192.168.20.2–192.168.20.254 (DHCP) | 192.168.20.1 | 254 |
+| VLAN 30 – Wi-Fi Staff | 192.168.30.0/24 | 255.255.255.0 | 192.168.30.2–192.168.30.254 (DHCP) | 192.168.30.1 | 254 |
+| VLAN 40 – Wi-Fi Invitados | 192.168.40.0/24 | 255.255.255.0 | 192.168.40.2–192.168.40.254 (DHCP) | 192.168.40.1 | 254 |
 
-## Observaciones
-
-- El rango útil de cada subred excluye la dirección de red y la dirección de broadcast.
-- El gateway se configura en la primera dirección válida de cada VLAN.
-- Los equipos de la app y de la base de datos pueden ubicarse en redes distintas si se habilita el enrutamiento y el acceso seguro.
-- En un entorno real, los valores deben ajustarse al diseño específico del campus, laboratorio o infraestructura de la empresa.
+Las subredes utilizan direcciones privadas del bloque 192.168.0.0/16, dividido en redes /24. Cada /24 ofrece 254 direcciones de host utilizables; el conteo incluye la dirección del gateway (.1). Los rangos de la tabla indican las direcciones asignables a los dispositivos, excluyendo el gateway. En la VLAN 10 se reserva el rango .2–.50 para direcciones estáticas de servidores.
