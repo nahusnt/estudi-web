@@ -47,7 +47,8 @@
 - 🗂️ Clasificar cada pendiente como Trabajo, Personal, Estudio u Otro.
 - 🏷️ Añadir hasta cinco etiquetas por tarea.
 - 🔎 Filtrar por estado, categoría o etiqueta, y ordenar por fecha o título.
-- 🌓 Elegir entre modo claro y oscuro; la preferencia queda guardada en el navegador.
+- 📊 Consultar un resumen de tareas pendientes, completadas y categorías.
+- ⚙️ Personalizar el tema claro/oscuro y el espacio de la lista; las preferencias quedan guardadas en el navegador.
 - ☁️ Guardar tus tareas en MongoDB, ya sea tu propia base de datos u otra externa.
 
 
@@ -57,6 +58,12 @@
 | --- | --- |
 | Python y Flask | MongoDB Atlas y PyMongo |
 | HTML, CSS y JavaScript | Variables de entorno con `python-dotenv` |
+
+## 🧩 Organización del backend
+
+- `Tarea` mantiene privados sus datos y valida el título y las etiquetas al crear cada tarea.
+- `Categoria` centraliza las categorías permitidas.
+- `RepositorioTareas` encapsula las operaciones de lectura y escritura en MongoDB.
 
 ## 🚀 Empezar
 

@@ -32,6 +32,12 @@
             </button>
         </header>
 
+        <nav class="section-nav" aria-label="Secciones principales">
+            <a href="{{ url_for('index', seccion='crear') }}" {% if seccion == "crear" %}aria-current="page"{% endif %}>Crear</a>
+            <a href="{{ url_for('index', seccion='resumen') }}" {% if seccion == "resumen" %}aria-current="page"{% endif %}>Resumen</a>
+            <a href="{{ url_for('index', seccion='ajustes') }}" {% if seccion == "ajustes" %}aria-current="page"{% endif %}>Ajustes</a>
+        </nav>
+
         {% with mensajes = get_flashed_messages(with_categories=true) %}
             {% if mensajes %}
                 <div class="messages" aria-live="polite">
@@ -42,112 +48,181 @@
             {% endif %}
         {% endwith %}
 
-        <section class="panel glass create-panel" aria-labelledby="create-title">
-            <h2 id="create-title">Agregar una tarea</h2>
-            <form action="{{ url_for('agregar') }}" method="POST" class="task-form">
-                <label class="field field-title">
-                    <span>Tarea</span>
-                    <input type="text" name="titulo" placeholder="¿Qué necesitas hacer?" maxlength="120" required>
-                </label>
-                <label class="field">
-                    <span>Categoría</span>
-                    <select name="categoria" required>
-                        {% for categoria in categorias %}
-                            <option value="{{ categoria }}" {% if categoria == "Personal" %}selected{% endif %}>{{ categoria }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label class="field field-tags">
-                    <span>Etiquetas <small>(opcional)</small></span>
-                    <input type="text" name="etiquetas" placeholder="#urgente, equipo" maxlength="110" aria-describedby="tag-help">
-                    <small id="tag-help">Hasta 5, separadas por espacios o comas.</small>
-                </label>
-                <button class="button button-primary add-button" type="submit">Agregar tarea</button>
-            </form>
-        </section>
+        <div {% if seccion != "crear" %}hidden{% endif %}>
+            <section class="panel glass create-panel" aria-labelledby="create-title">
+                <h2 id="create-title">Agregar una tarea</h2>
+                <form action="{{ url_for('agregar') }}" method="POST" class="task-form">
+                    <input type="hidden" name="seccion" value="crear">
+                    <label class="field field-title">
+                        <span>Tarea</span>
+                        <input type="text" name="titulo" placeholder="¿Qué necesitas hacer?" maxlength="120" required>
+                    </label>
+                    <label class="field">
+                        <span>Categoría</span>
+                        <select name="categoria" required>
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria }}" {% if categoria == "Personal" %}selected{% endif %}>{{ categoria }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label class="field field-tags">
+                        <span>Etiquetas <small>(opcional)</small></span>
+                        <input type="text" name="etiquetas" placeholder="#urgente, equipo" maxlength="110" aria-describedby="tag-help">
+                        <small id="tag-help">Hasta 5, separadas por espacios o comas.</small>
+                    </label>
+                    <button class="button button-primary add-button" type="submit">Agregar tarea</button>
+                </form>
+            </section>
 
-        <section class="panel glass" aria-labelledby="list-title">
-            <div class="list-heading">
-                <div>
-                    <h2 id="list-title">Tu lista</h2>
-                    <p class="subtitle">{{ tareas|length }} tarea{% if tareas|length != 1 %}s{% endif %} encontrada{% if tareas|length != 1 %}s{% endif %}</p>
+            <section class="panel glass" aria-labelledby="list-title">
+                <div class="list-heading">
+                    <div>
+                        <h2 id="list-title">Tu lista</h2>
+                        <p class="subtitle">{{ tareas|length }} tarea{% if tareas|length != 1 %}s{% endif %} encontrada{% if tareas|length != 1 %}s{% endif %}</p>
+                    </div>
+                </div>
+                <form action="{{ url_for('index') }}" method="GET" class="filters">
+                    <input type="hidden" name="seccion" value="crear">
+                    <label class="field">
+                        <span>Estado</span>
+                        <select name="estado">
+                            <option value="" {% if not filtros.estado %}selected{% endif %}>Todos</option>
+                            <option value="pendientes" {% if filtros.estado == "pendientes" %}selected{% endif %}>Pendientes</option>
+                            <option value="terminadas" {% if filtros.estado == "terminadas" %}selected{% endif %}>Terminadas</option>
+                        </select>
+                    </label>
+                    <label class="field">
+                        <span>Categoría</span>
+                        <select name="categoria">
+                            <option value="" {% if not filtros.categoria %}selected{% endif %}>Todas</option>
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria }}" {% if filtros.categoria == categoria %}selected{% endif %}>{{ categoria }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label class="field">
+                        <span>Etiqueta</span>
+                        <select name="etiqueta">
+                            <option value="" {% if not filtros.etiqueta %}selected{% endif %}>Todas</option>
+                            {% for etiqueta in etiquetas_disponibles %}
+                                <option value="{{ etiqueta }}" {% if filtros.etiqueta == etiqueta %}selected{% endif %}>#{{ etiqueta }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label class="field">
+                        <span>Ordenar</span>
+                        <select name="orden">
+                            <option value="recientes" {% if filtros.orden == "recientes" %}selected{% endif %}>Más recientes</option>
+                            <option value="antiguas" {% if filtros.orden == "antiguas" %}selected{% endif %}>Más antiguas</option>
+                            <option value="titulo" {% if filtros.orden == "titulo" %}selected{% endif %}>Por título</option>
+                        </select>
+                    </label>
+                    <button class="button button-secondary filter-button" type="submit">Aplicar</button>
+                </form>
+
+                {% if tareas %}
+                    <ul class="task-list">
+                        {% for tarea in tareas %}
+                            <li class="task-item {% if tarea.completada %}is-complete{% endif %}">
+                                <form action="{{ url_for('toggle_tarea', id_tarea=tarea.id) }}" method="POST" class="toggle-form">
+                                    <input type="hidden" name="seccion" value="crear">
+                                    {% for nombre, valor in filtros.items() %}
+                                        <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
+                                    {% endfor %}
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" aria-label="Marcar {{ tarea.titulo }} como {% if tarea.completada %}pendiente{% else %}terminada{% endif %}" {% if tarea.completada %}checked{% endif %} onchange="this.form.submit()">
+                                    </label>
+                                </form>
+                                <div class="task-content">
+                                    <span class="task-title">{{ tarea.titulo }}</span>
+                                    <div class="task-meta">
+                                        <span class="category-badge">{{ tarea.categoria }}</span>
+                                        {% for etiqueta in tarea.etiquetas %}
+                                            <span class="tag-badge">#{{ etiqueta }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <form action="{{ url_for('eliminar_tarea', id_tarea=tarea.id) }}" method="POST" class="delete-form" data-confirm="¿Eliminar esta tarea?">
+                                    <input type="hidden" name="seccion" value="crear">
+                                    {% for nombre, valor in filtros.items() %}
+                                        <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
+                                    {% endfor %}
+                                    <button class="button button-delete" type="submit" aria-label="Eliminar {{ tarea.titulo }}" title="Eliminar tarea">Eliminar</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="empty-state">
+                        <span class="sparkle sparkle-lg" aria-hidden="true"></span>
+                        <p>No hay tareas con estos filtros.</p>
+                        <a href="{{ url_for('index', seccion='crear') }}">Limpiar filtros</a>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <section class="summary-section" aria-labelledby="summary-title" {% if seccion != "resumen" %}hidden{% endif %}>
+            <div class="panel glass">
+                <div class="list-heading">
+                    <div>
+                        <h2 id="summary-title">Tu resumen</h2>
+                        <p class="subtitle">Una mirada rápida a tus pendientes y avances.</p>
+                    </div>
+                </div>
+                <div class="summary-cards">
+                    <article class="summary-card"><span>Total de tareas</span><strong>{{ total_tareas }}</strong></article>
+                    <article class="summary-card"><span>Por hacer</span><strong>{{ tareas_pendientes }}</strong></article>
+                    <article class="summary-card"><span>Completadas</span><strong>{{ tareas_terminadas }}</strong></article>
+                </div>
+                <div class="summary-details">
+                    <section class="chart-panel" aria-labelledby="chart-title">
+                        <h3 id="chart-title">Estado de tus tareas</h3>
+                        {% if total_tareas %}
+                            <div class="donut-chart" role="img" aria-label="{{ tareas_pendientes }} tareas pendientes y {{ tareas_terminadas }} completadas" style="--pending-pct: {{ porcentaje_pendientes }}%;">
+                                <div><strong>{{ porcentaje_pendientes }}%</strong><span>pendiente</span></div>
+                            </div>
+                            <div class="chart-legend">
+                                <span><i class="legend-dot legend-pending"></i>{{ tareas_pendientes }} pendientes</span>
+                                <span><i class="legend-dot legend-complete"></i>{{ tareas_terminadas }} completadas</span>
+                            </div>
+                        {% else %}
+                            <div class="empty-state summary-empty"><p>Agrega tu primera tarea para ver las estadísticas.</p></div>
+                        {% endif %}
+                    </section>
+                    <section class="category-panel" aria-labelledby="category-title">
+                        <h3 id="category-title">Tareas por categoría</h3>
+                        <ul class="category-stats">
+                            {% for item in categorias_resumen %}
+                                <li>
+                                    <div><span>{{ item.nombre }}</span><strong>{{ item.total }}</strong></div>
+                                    <span class="category-track"><span style="width: {{ (item.total / total_tareas * 100) if total_tareas else 0 }}%"></span></span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
                 </div>
             </div>
-            <form action="{{ url_for('index') }}" method="GET" class="filters">
-                <label class="field">
-                    <span>Estado</span>
-                    <select name="estado">
-                        <option value="" {% if not filtros.estado %}selected{% endif %}>Todos</option>
-                        <option value="pendientes" {% if filtros.estado == "pendientes" %}selected{% endif %}>Pendientes</option>
-                        <option value="terminadas" {% if filtros.estado == "terminadas" %}selected{% endif %}>Terminadas</option>
-                    </select>
-                </label>
-                <label class="field">
-                    <span>Categoría</span>
-                    <select name="categoria">
-                        <option value="" {% if not filtros.categoria %}selected{% endif %}>Todas</option>
-                        {% for categoria in categorias %}
-                            <option value="{{ categoria }}" {% if filtros.categoria == categoria %}selected{% endif %}>{{ categoria }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label class="field">
-                    <span>Etiqueta</span>
-                    <select name="etiqueta">
-                        <option value="" {% if not filtros.etiqueta %}selected{% endif %}>Todas</option>
-                        {% for etiqueta in etiquetas_disponibles %}
-                            <option value="{{ etiqueta }}" {% if filtros.etiqueta == etiqueta %}selected{% endif %}>#{{ etiqueta }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label class="field">
-                    <span>Ordenar</span>
-                    <select name="orden">
-                        <option value="recientes" {% if filtros.orden == "recientes" %}selected{% endif %}>Más recientes</option>
-                        <option value="antiguas" {% if filtros.orden == "antiguas" %}selected{% endif %}>Más antiguas</option>
-                        <option value="titulo" {% if filtros.orden == "titulo" %}selected{% endif %}>Por título</option>
-                    </select>
-                </label>
-                <button class="button button-secondary filter-button" type="submit">Aplicar</button>
-            </form>
+        </section>
 
-            {% if tareas %}
-                <ul class="task-list">
-                    {% for tarea in tareas %}
-                        <li class="task-item {% if tarea.completada %}is-complete{% endif %}">
-                            <form action="{{ url_for('toggle_tarea', id_tarea=tarea.id) }}" method="POST" class="toggle-form">
-                                {% for nombre, valor in filtros.items() %}
-                                    <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
-                                {% endfor %}
-                                <label class="checkbox-label">
-                                    <input type="checkbox" aria-label="Marcar {{ tarea.titulo }} como {% if tarea.completada %}pendiente{% else %}terminada{% endif %}" {% if tarea.completada %}checked{% endif %} onchange="this.form.submit()">
-                                </label>
-                            </form>
-                            <div class="task-content">
-                                <span class="task-title">{{ tarea.titulo }}</span>
-                                <div class="task-meta">
-                                    <span class="category-badge">{{ tarea.categoria }}</span>
-                                    {% for etiqueta in tarea.etiquetas %}
-                                        <span class="tag-badge">#{{ etiqueta }}</span>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <form action="{{ url_for('eliminar_tarea', id_tarea=tarea.id) }}" method="POST" class="delete-form" data-confirm="¿Eliminar esta tarea?">
-                                {% for nombre, valor in filtros.items() %}
-                                    <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
-                                {% endfor %}
-                                <button class="button button-delete" type="submit" aria-label="Eliminar {{ tarea.titulo }}" title="Eliminar tarea">Eliminar</button>
-                            </form>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <div class="empty-state">
-                    <span class="sparkle sparkle-lg" aria-hidden="true"></span>
-                    <p>No hay tareas con estos filtros.</p>
-                    <a href="{{ url_for('index') }}">Limpiar filtros</a>
+        <section class="settings-section" aria-labelledby="settings-title" {% if seccion != "ajustes" %}hidden{% endif %}>
+            <div class="panel glass">
+                <h2 id="settings-title">Ajustes de la web</h2>
+                <p class="subtitle settings-intro">Personaliza la apariencia. Tus preferencias se guardan en este navegador.</p>
+                <div class="settings-list">
+                    <label class="setting-row" for="theme-setting">
+                        <span><strong>Apariencia</strong><small>Elige el tema claro u oscuro.</small></span>
+                        <select id="theme-setting" aria-label="Tema de la web">
+                            <option value="dark">Oscuro</option>
+                            <option value="light">Claro</option>
+                        </select>
+                    </label>
+                    <label class="setting-row" for="density-setting">
+                        <span><strong>Lista compacta</strong><small>Reduce el espacio entre las tareas.</small></span>
+                        <input id="density-setting" type="checkbox">
+                    </label>
                 </div>
-            {% endif %}
+            </div>
         </section>
     </main>
 </body>
