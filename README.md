@@ -22,14 +22,14 @@
 
 <p align="center">
   <a href="./images/vista-clara.svg">
-    <img src="./images/vista-clara.svg" alt="Estudi Web en modo claro" width="49%">
+    <img src="./images/vista-clara.svg" alt="Resumen de tareas de Estudi Web en modo claro" width="49%">
   </a>
   <a href="./images/vista-oscura.svg">
-    <img src="./images/vista-oscura.svg" alt="Estudi Web en modo oscuro" width="49%">
+    <img src="./images/vista-oscura.svg" alt="Resumen de tareas de Estudi Web en modo oscuro" width="49%">
   </a>
 </p>
 
-<p align="center"><sub>☀️ Modo claro · 🌙 Modo oscuro · Una lista más ordenada, a tu manera</sub></p>
+<p align="center"><sub>☀️ Tema claro · 🌙 Tema oscuro · Crear, consultar tu resumen y personalizar tus ajustes</sub></p>
 
 <a id="android"></a>
 
