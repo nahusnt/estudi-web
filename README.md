@@ -44,12 +44,24 @@
 ## ✨ Lo que puedes hacer
 
 - ✅ Crear tareas y marcarlas como completadas.
+- 📝 Añadir una descripción y una fecha límite opcionales a cada tarea.
 - 🗂️ Clasificar cada pendiente como Trabajo, Personal, Estudio u Otro.
 - 🏷️ Añadir hasta cinco etiquetas por tarea.
 - 🔎 Filtrar por estado, categoría o etiqueta, y ordenar por fecha o título.
-- 📊 Consultar un resumen de tareas pendientes, completadas y categorías.
+- 📊 Consultar un resumen con progreso, categorías, tareas vencidas y próximas fechas límite.
+- 🧭 Alternar entre la interfaz anterior con navegación superior y la nueva barra lateral; la preferencia queda guardada en el navegador.
 - ⚙️ Personalizar el tema claro/oscuro y el espacio de la lista; las preferencias quedan guardadas en el navegador.
 - ☁️ Guardar tus tareas en MongoDB, ya sea tu propia base de datos u otra externa.
+
+## 🧪 Pruebas
+
+Ejecuta las pruebas automatizadas desde la raíz del proyecto:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Las pruebas validan las rutas principales y reglas del modelo sin necesitar una conexión a MongoDB.
 
 
 ## 🧰 Tecnologías

@@ -1,4 +1,5 @@
 import re
+from datetime import date
 
 from bson import ObjectId
 
@@ -32,6 +33,8 @@ class Tarea:
         id_tarea=None,
         categoria="Personal",
         etiquetas=None,
+        descripcion="",
+        fecha_vencimiento=None,
     ):
         titulo = titulo.strip() if isinstance(titulo, str) else ""
         if not titulo or len(titulo) > 120:
@@ -46,6 +49,32 @@ class Tarea:
             categoria if isinstance(categoria, Categoria) else Categoria(categoria)
         )
         self.__etiquetas = self._validar_etiquetas(etiquetas)
+        self.__descripcion = self._validar_descripcion(descripcion)
+        self.__fecha_vencimiento = self._validar_fecha(fecha_vencimiento)
+
+    @staticmethod
+    def _validar_descripcion(descripcion):
+        if not isinstance(descripcion, str):
+            raise ValueError("La descripción debe ser texto.")
+        descripcion = descripcion.strip()
+        if len(descripcion) > 500:
+            raise ValueError("La descripción debe tener 500 caracteres como máximo.")
+        return descripcion
+
+    @staticmethod
+    def _validar_fecha(fecha_vencimiento):
+        if fecha_vencimiento in (None, ""):
+            return None
+        if isinstance(fecha_vencimiento, date):
+            return fecha_vencimiento
+        if isinstance(fecha_vencimiento, str):
+            try:
+                fecha = date.fromisoformat(fecha_vencimiento)
+            except ValueError as error:
+                raise ValueError("La fecha límite debe ser válida.") from error
+            if fecha.isoformat() == fecha_vencimiento:
+                return fecha
+        raise ValueError("La fecha límite debe ser válida.")
 
     @staticmethod
     def etiqueta_valida(etiqueta):
@@ -91,6 +120,14 @@ class Tarea:
     def etiquetas(self):
         return self.__etiquetas.copy()
 
+    @property
+    def descripcion(self):
+        return self.__descripcion
+
+    @property
+    def fecha_vencimiento(self):
+        return self.__fecha_vencimiento
+
     def asignar_id(self, id_tarea):
         self.__id = id_tarea
 
@@ -101,6 +138,12 @@ class Tarea:
             "completada": self.completada,
             "categoria": self.categoria,
             "etiquetas": self.__etiquetas.copy(),
+            "descripcion": self.descripcion,
+            "fecha_vencimiento": (
+                self.fecha_vencimiento.isoformat()
+                if self.fecha_vencimiento
+                else None
+            ),
         }
 
 
@@ -138,7 +181,14 @@ class RepositorioTareas:
         }
         documentos = self.__coleccion.find(
             filtros,
-            {"titulo": 1, "completada": 1, "categoria": 1, "etiquetas": 1},
+            {
+                "titulo": 1,
+                "completada": 1,
+                "categoria": 1,
+                "etiquetas": 1,
+                "descripcion": 1,
+                "fecha_vencimiento": 1,
+            },
         ).sort(ordenes[orden])
         return [
             Tarea(
@@ -147,6 +197,8 @@ class RepositorioTareas:
                 id_tarea=str(doc["_id"]),
                 categoria=doc.get("categoria", "Personal"),
                 etiquetas=doc.get("etiquetas", []),
+                descripcion=doc.get("descripcion", ""),
+                fecha_vencimiento=doc.get("fecha_vencimiento"),
             )
             for doc in documentos
         ]

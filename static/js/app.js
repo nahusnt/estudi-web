@@ -2,6 +2,7 @@
 // El diseño nace oscuro (estética Y2K). El modo claro se guarda en localStorage.
 const CLAVE_TEMA = "tema-lista-tareas";
 const CLAVE_PALETA = "paleta-lista-tareas";
+const CLAVE_DISPOSICION = "disposicion-lista-tareas";
 const CLAVE_LISTA_COMPACTA = "lista-tareas-compacta";
 const CLAVE_TAMANO_TEXTO = "tamano-texto-lista-tareas";
 const CLAVE_CONTRASTE = "contraste-lista-tareas";
@@ -9,6 +10,7 @@ const CLAVE_ANIMACIONES = "animaciones-lista-tareas";
 const themeButton = document.querySelector("#theme-toggle");
 const themeLabel = document.querySelector("#theme-label");
 const themeSetting = document.querySelector("#theme-setting");
+const layoutSetting = document.querySelector("#layout-setting");
 const paletteSetting = document.querySelector("#palette-setting");
 const textSizeSetting = document.querySelector("#text-size-setting");
 const densitySetting = document.querySelector("#density-setting");
@@ -17,6 +19,7 @@ const motionSetting = document.querySelector("#motion-setting");
 
 const PALETAS_VALIDAS = ["violet", "ocean", "sunset", "mint", "citrus", "berry"];
 const TAMANOS_VALIDOS = ["normal", "large", "x-large"];
+const DISPOSICIONES_VALIDAS = ["compact", "extended"];
 
 function leerTemaGuardado() {
     try {
@@ -35,6 +38,12 @@ function aplicarTema(tema) {
 }
 
 aplicarTema(leerTemaGuardado() === "light" ? "light" : "dark");
+const disposicionGuardada = leerPreferencia(CLAVE_DISPOSICION);
+const disposicionInicial = DISPOSICIONES_VALIDAS.includes(disposicionGuardada)
+    ? disposicionGuardada
+    : "extended";
+document.documentElement.dataset.layout = disposicionInicial;
+layoutSetting.value = disposicionInicial;
 const paletaGuardada = leerPreferencia(CLAVE_PALETA);
 const paletaInicial = PALETAS_VALIDAS.includes(paletaGuardada) ? paletaGuardada : "violet";
 document.documentElement.dataset.palette = paletaInicial;
@@ -66,6 +75,14 @@ themeButton.addEventListener("click", () => {
 themeSetting.addEventListener("change", () => {
     aplicarTema(themeSetting.value);
     guardarPreferencia(CLAVE_TEMA, themeSetting.value);
+});
+
+layoutSetting.addEventListener("change", () => {
+    const disposicion = DISPOSICIONES_VALIDAS.includes(layoutSetting.value)
+        ? layoutSetting.value
+        : "extended";
+    document.documentElement.dataset.layout = disposicion;
+    guardarPreferencia(CLAVE_DISPOSICION, disposicion);
 });
 
 paletteSetting.addEventListener("change", () => {

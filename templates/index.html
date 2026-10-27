@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="dark" data-layout="extended">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,25 +18,54 @@
     <div class="bg-orb bg-orb-two" aria-hidden="true"></div>
 
     <main class="app-shell">
-        <header class="page-header">
-            <div class="brand-lockup">
+        <aside class="sidebar">
+            <a class="sidebar-brand" href="{{ url_for('index', seccion='resumen') }}" aria-label="Estudi Web, ir al resumen">
                 <span class="brand-logo" role="img" aria-label="Logo de Estudi Web"></span>
-                <div>
-                    <p class="eyebrow"><span class="sparkle" aria-hidden="true"></span> Organiza tu día</p>
-                    <h1 class="chrome-title">Estudi Web</h1>
-                    <p class="subtitle">Un espacio sencillo para tus ideas y pendientes.</p>
-                </div>
+                <span class="sidebar-brand-name">Estudi Web</span>
+            </a>
+            <p class="sidebar-label">Espacio</p>
+            <nav class="section-nav" aria-label="Secciones principales">
+                <a href="{{ url_for('index', seccion='resumen') }}" aria-label="Resumen" {% if seccion == "resumen" %}aria-current="page"{% endif %}>
+                    <span class="nav-icon" aria-hidden="true">▦</span><span class="nav-label">Resumen</span>
+                </a>
+                <a href="{{ url_for('index', seccion='crear') }}" aria-label="Tareas" {% if seccion == "crear" %}aria-current="page"{% endif %}>
+                    <span class="nav-icon" aria-hidden="true">☑</span><span class="nav-label">Tareas</span>
+                </a>
+                <a href="{{ url_for('index', seccion='ajustes') }}" aria-label="Configuración" {% if seccion == "ajustes" %}aria-current="page"{% endif %}>
+                    <span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Ajustes</span>
+                </a>
+            </nav>
+            <div class="sidebar-note">
+                <span class="sparkle" aria-hidden="true"></span>
+                <strong>Un poco más de enfoque.</strong>
+                <p>Una tarea a la vez. Haz espacio para lo importante.</p>
+            </div>
+            <p class="sidebar-status"><span aria-hidden="true">✓</span> Todo listo para avanzar</p>
+        </aside>
+
+        <div class="main-content">
+        <header class="page-header">
+            <div class="page-context">
+                <p class="breadcrumb">Espacio <span aria-hidden="true">/</span>
+                    {% if seccion == "resumen" %}Resumen{% elif seccion == "ajustes" %}Configuración{% else %}Tareas{% endif %}
+                </p>
+                <h1 class="page-title">
+                    {% if seccion == "resumen" %}Una mente clara. Un día enfocado.
+                    {% elif seccion == "ajustes" %}Configuración
+                    {% else %}Tareas{% endif %}
+                </h1>
+                <p class="subtitle">
+                    {% if seccion == "resumen" %}Tu progreso y lo que necesita atención.
+                    {% elif seccion == "ajustes" %}Tu espacio, a tu manera.
+                    {% else %}Organiza lo que importa y avanza a tu ritmo.{% endif %}
+                </p>
             </div>
             <button class="button button-quiet" id="theme-toggle" type="button" aria-label="Activar modo claro">
                 <span aria-hidden="true">◐</span> <span id="theme-label">Modo claro</span>
             </button>
         </header>
 
-        <nav class="section-nav" aria-label="Secciones principales">
-            <a href="{{ url_for('index', seccion='crear') }}" {% if seccion == "crear" %}aria-current="page"{% endif %}>Crear</a>
-            <a href="{{ url_for('index', seccion='resumen') }}" {% if seccion == "resumen" %}aria-current="page"{% endif %}>Resumen</a>
-            <a href="{{ url_for('index', seccion='ajustes') }}" {% if seccion == "ajustes" %}aria-current="page"{% endif %}>Ajustes</a>
-        </nav>
+        <div class="page-content">
 
         {% with mensajes = get_flashed_messages(with_categories=true) %}
             {% if mensajes %}
@@ -57,6 +86,10 @@
                         <span>Tarea</span>
                         <input type="text" name="titulo" placeholder="¿Qué necesitas hacer?" maxlength="120" required>
                     </label>
+                    <label class="field field-description">
+                        <span>Descripción <small>(opcional)</small></span>
+                        <input type="text" name="descripcion" placeholder="Añade algunos detalles" maxlength="500">
+                    </label>
                     <label class="field">
                         <span>Categoría</span>
                         <select name="categoria" required>
@@ -64,6 +97,10 @@
                                 <option value="{{ categoria }}" {% if categoria == "Personal" %}selected{% endif %}>{{ categoria }}</option>
                             {% endfor %}
                         </select>
+                    </label>
+                    <label class="field">
+                        <span>Fecha límite <small>(opcional)</small></span>
+                        <input type="date" name="fecha_vencimiento">
                     </label>
                     <label class="field field-tags">
                         <span>Etiquetas <small>(opcional)</small></span>
@@ -135,11 +172,17 @@
                                 </form>
                                 <div class="task-content">
                                     <span class="task-title">{{ tarea.titulo }}</span>
+                                    {% if tarea.descripcion %}
+                                        <p class="task-description">{{ tarea.descripcion }}</p>
+                                    {% endif %}
                                     <div class="task-meta">
                                         <span class="category-badge">{{ tarea.categoria }}</span>
                                         {% for etiqueta in tarea.etiquetas %}
                                             <span class="tag-badge">#{{ etiqueta }}</span>
                                         {% endfor %}
+                                        {% if tarea.fecha_vencimiento %}
+                                            <time class="task-due-date" datetime="{{ tarea.fecha_vencimiento.isoformat() }}">Vence {{ tarea.fecha_vencimiento.strftime("%d/%m/%Y") }}</time>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <form action="{{ url_for('eliminar_tarea', id_tarea=tarea.id) }}" method="POST" class="delete-form" data-confirm="¿Eliminar esta tarea?">
@@ -166,15 +209,27 @@
             <div class="panel glass">
                 <div class="list-heading">
                     <div>
-                        <h2 id="summary-title">Tu resumen</h2>
-                        <p class="subtitle">Una mirada rápida a tus pendientes y avances.</p>
+                        <h2 id="summary-title">Tu progreso de hoy</h2>
+                        <p class="subtitle">Una mirada clara a tus avances y próximas fechas límite.</p>
                     </div>
                 </div>
                 <div class="summary-cards">
                     <article class="summary-card"><span>Total de tareas</span><strong>{{ total_tareas }}</strong></article>
                     <article class="summary-card"><span>Por hacer</span><strong>{{ tareas_pendientes }}</strong></article>
                     <article class="summary-card"><span>Completadas</span><strong>{{ tareas_terminadas }}</strong></article>
+                    <article class="summary-card"><span>Próximas · 7 días</span><strong>{{ total_tareas_por_vencer }}</strong></article>
+                    <article class="summary-card {% if tareas_vencidas %}summary-card-alert{% endif %}"><span>Vencidas</span><strong>{{ tareas_vencidas }}</strong></article>
                 </div>
+                <section class="completion-panel" aria-labelledby="completion-title">
+                    <div class="completion-heading">
+                        <h3 id="completion-title">Progreso completado</h3>
+                        <strong>{{ porcentaje_completadas }}%</strong>
+                    </div>
+                    <div class="completion-track" role="progressbar" aria-label="Progreso de tareas completadas" aria-valuenow="{{ porcentaje_completadas }}" aria-valuemin="0" aria-valuemax="100">
+                        <span style="width: {{ porcentaje_completadas }}%"></span>
+                    </div>
+                    <p class="subtitle">{{ tareas_terminadas }} de {{ total_tareas }} tareas completadas</p>
+                </section>
                 <div class="summary-details">
                     <section class="chart-panel" aria-labelledby="chart-title">
                         <h3 id="chart-title">Estado de tus tareas</h3>
@@ -202,6 +257,45 @@
                         </ul>
                     </section>
                 </div>
+                <section class="upcoming-panel" aria-labelledby="upcoming-title">
+                    <div class="list-heading">
+                        <div>
+                            <h3 id="upcoming-title">Fechas límite</h3>
+                            <p class="subtitle">Tareas atrasadas y pendientes para los próximos siete días.</p>
+                        </div>
+                        <a class="text-link" href="{{ url_for('index', seccion='crear', estado='pendientes') }}">Ver tareas</a>
+                    </div>
+                    {% if tareas_vencidas_lista %}
+                        <h4 class="deadline-group-title deadline-overdue-title">Vencidas</h4>
+                        <ul class="upcoming-list">
+                            {% for tarea in tareas_vencidas_lista %}
+                                <li>
+                                    <span class="upcoming-task">
+                                        <strong>{{ tarea.titulo }}</strong>
+                                        <small>{{ tarea.categoria }}</small>
+                                    </span>
+                                    <time datetime="{{ tarea.fecha_vencimiento.isoformat() }}">{{ tarea.fecha_vencimiento.strftime("%d/%m/%Y") }}</time>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if tareas_por_vencer %}
+                        <h4 class="deadline-group-title">Próximos siete días</h4>
+                        <ul class="upcoming-list">
+                            {% for tarea in tareas_por_vencer %}
+                                <li>
+                                    <span class="upcoming-task">
+                                        <strong>{{ tarea.titulo }}</strong>
+                                        <small>{{ tarea.categoria }}</small>
+                                    </span>
+                                    <time datetime="{{ tarea.fecha_vencimiento.isoformat() }}">{{ tarea.fecha_vencimiento.strftime("%d/%m/%Y") }}</time>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif not tareas_vencidas_lista %}
+                        <p class="empty-state summary-empty">No tienes tareas pendientes con fecha límite próxima.</p>
+                    {% endif %}
+                </section>
             </div>
         </section>
 
@@ -210,6 +304,13 @@
                 <h2 id="settings-title">Ajustes de la web</h2>
                 <p class="subtitle settings-intro">Personaliza la apariencia. Tus preferencias se guardan en este navegador.</p>
                 <div class="settings-list">
+                    <label class="setting-row" for="layout-setting">
+                        <span><strong>Diseño de interfaz</strong><small>Alterna entre la interfaz anterior y la nueva barra lateral.</small></span>
+                        <select id="layout-setting" aria-label="Diseño de interfaz">
+                            <option value="compact">Anterior · navegación superior</option>
+                            <option value="extended">Nueva · barra lateral</option>
+                        </select>
+                    </label>
                     <label class="setting-row" for="theme-setting">
                         <span><strong>Apariencia</strong><small>Elige el tema claro u oscuro.</small></span>
                         <select id="theme-setting" aria-label="Tema de la web">
@@ -251,6 +352,8 @@
                 </div>
             </div>
         </section>
+        </div>
+        </div>
     </main>
 </body>
 </html>

@@ -1,4 +1,5 @@
 import os
+from datetime import date, timedelta
 
 from bson import ObjectId
 from dotenv import load_dotenv
@@ -67,9 +68,33 @@ def index():
 
     tareas_pendientes = sum(not tarea.completada for tarea in todas_las_tareas)
     tareas_terminadas = len(todas_las_tareas) - tareas_pendientes
+    fecha_hoy = date.today()
+    limite_proximas_tareas = fecha_hoy + timedelta(days=7)
+    tareas_vencidas_lista = [
+        tarea
+        for tarea in todas_las_tareas
+        if not tarea.completada
+        and tarea.fecha_vencimiento is not None
+        and tarea.fecha_vencimiento < fecha_hoy
+    ]
+    tareas_vencidas_lista.sort(
+        key=lambda tarea: (tarea.fecha_vencimiento, tarea.titulo.casefold())
+    )
+    tareas_vencidas = len(tareas_vencidas_lista)
+    tareas_por_vencer = [
+        tarea
+        for tarea in todas_las_tareas
+        if not tarea.completada
+        and tarea.fecha_vencimiento is not None
+        and fecha_hoy <= tarea.fecha_vencimiento <= limite_proximas_tareas
+    ]
+    tareas_por_vencer.sort(
+        key=lambda tarea: (tarea.fecha_vencimiento, tarea.titulo.casefold())
+    )
     porcentaje_pendientes = round(
         tareas_pendientes / len(todas_las_tareas) * 100
     ) if todas_las_tareas else 0
+    porcentaje_completadas = 100 - porcentaje_pendientes if todas_las_tareas else 0
     categorias_resumen = [
         {
             "nombre": categoria,
@@ -88,6 +113,11 @@ def index():
         tareas_pendientes=tareas_pendientes,
         tareas_terminadas=tareas_terminadas,
         porcentaje_pendientes=porcentaje_pendientes,
+        porcentaje_completadas=porcentaje_completadas,
+        tareas_vencidas=tareas_vencidas,
+        tareas_vencidas_lista=tareas_vencidas_lista[:5],
+        tareas_por_vencer=tareas_por_vencer[:5],
+        total_tareas_por_vencer=len(tareas_por_vencer),
         categorias_resumen=categorias_resumen,
     )
 
@@ -99,9 +129,17 @@ def agregar():
     categoria = request.form.get("categoria", "")
     etiquetas_texto = request.form.get("etiquetas", "")
     etiquetas = etiquetas_texto.replace(",", " ").split()
+    descripcion = request.form.get("descripcion", "")
+    fecha_vencimiento = request.form.get("fecha_vencimiento", "")
 
     try:
-        tarea = Tarea(titulo=titulo, categoria=categoria, etiquetas=etiquetas)
+        tarea = Tarea(
+            titulo=titulo,
+            categoria=categoria,
+            etiquetas=etiquetas,
+            descripcion=descripcion,
+            fecha_vencimiento=fecha_vencimiento,
+        )
     except ValueError as error:
         flash(str(error), "error")
     else:
