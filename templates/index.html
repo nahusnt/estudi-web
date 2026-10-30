@@ -167,7 +167,7 @@
                                         <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
                                     {% endfor %}
                                     <label class="checkbox-label">
-                                        <input type="checkbox" aria-label="Marcar {{ tarea.titulo }} como {% if tarea.completada %}pendiente{% else %}terminada{% endif %}" {% if tarea.completada %}checked{% endif %} onchange="this.form.submit()">
+                                        <input type="checkbox" data-task-title="{{ tarea.titulo }}" data-completed="{{ 'true' if tarea.completada else 'false' }}" aria-label="Marcar {{ tarea.titulo }} como {% if tarea.completada %}pendiente{% else %}terminada{% endif %}" {% if tarea.completada %}checked{% endif %} onchange="this.form.submit()">
                                     </label>
                                 </form>
                                 <div class="task-content">
@@ -190,7 +190,7 @@
                                     {% for nombre, valor in filtros.items() %}
                                         <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
                                     {% endfor %}
-                                    <button class="button button-delete" type="submit" aria-label="Eliminar {{ tarea.titulo }}" title="Eliminar tarea">Eliminar</button>
+                                    <button class="button button-delete" type="submit" data-task-title="{{ tarea.titulo }}" aria-label="Eliminar {{ tarea.titulo }}" title="Eliminar tarea">Eliminar</button>
                                 </form>
                             </li>
                         {% endfor %}
@@ -316,6 +316,7 @@
                         <select id="theme-setting" aria-label="Tema de la web">
                             <option value="dark">Oscuro</option>
                             <option value="light">Claro</option>
+                            <option value="amoled">AMOLED (negro puro)</option>
                         </select>
                     </label>
                     <label class="setting-row" for="palette-setting">
@@ -327,6 +328,21 @@
                             <option value="mint">Menta</option>
                             <option value="citrus">Cítrico</option>
                             <option value="berry">Frambuesa</option>
+                            <option value="coral">Coral</option>
+                            <option value="forest">Bosque</option>
+                            <option value="sapphire">Zafiro</option>
+                            <option value="rose">Rosa</option>
+                        </select>
+                    </label>
+                    <label class="setting-row" for="language-setting">
+                        <span><strong>Idioma</strong><small>Elige el idioma de la interfaz.</small></span>
+                        <select id="language-setting" aria-label="Idioma de la interfaz">
+                            <option value="es">Español</option>
+                            <option value="en">English</option>
+                            <option value="pt">Português</option>
+                            <option value="zh">中文（简体）</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
                         </select>
                     </label>
                     <label class="setting-row" for="text-size-setting">

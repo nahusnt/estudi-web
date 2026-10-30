@@ -14,7 +14,7 @@
 ## 2. Clases CSS
 | Clase | Para qué sirve |
 |---|---|
-| `:root` / `[data-theme="light"]` | Variables de color del tema oscuro (por defecto) y del claro. |
+| `:root` / `[data-theme="light"]` / `[data-theme="amoled"]` | Variables de color para los temas oscuro, claro y AMOLED negro puro. |
 | `.bg-orb`, `.bg-orb-one/two` | Burbujas de luz difuminadas del fondo (decorativas). |
 | `.app-shell` | Contenedor central con ancho máximo. |
 | `.page-header`, `.brand-lockup`, `.brand-logo` | Cabecera, grupo logo + títulos, logo con borde holográfico. |
@@ -39,9 +39,9 @@
 - `localStorage` ahora va dentro de `try/catch` por si el navegador lo bloquea.
 - **No se tocó nada** de Python ni de las variables Jinja (`{{ tarea.titulo }}`, `url_for`, `filtros`, etc.).
 
-## 4. Modo oscuro
-- El diseño es **oscuro por defecto**: las variables del `:root` ya son oscuras y el `<html>` trae `data-theme="dark"`.
-- El tema claro se define en `[data-theme="light"]`, que solo reemplaza las variables (colores, sombras, cromado).
-- Al hacer clic en el botón, el JS alterna `document.documentElement.dataset.theme` entre `dark` y `light` y guarda la elección con la clave `tema-lista-tareas`.
-- Al volver a cargar la página, el JS lee esa clave y restaura el tema elegido.
-- Los componentes usan solo variables (`var(--text)`, `var(--surface)`…), por eso no hace falta duplicar reglas por tema.
+## 4. Temas, paletas e idioma
+- El diseño es **oscuro por defecto**. Se puede elegir entre `dark`, `light` y `amoled`; AMOLED usa `#000000` como fondo y oculta los orbes decorativos.
+- El selector de color ofrece diez paletas de acento y se combina con cualquiera de los tres temas.
+- El botón de cabecera recorre los tres temas. La opción y la paleta se guardan en `localStorage` con las claves `tema-lista-tareas` y `paleta-lista-tareas`.
+- El selector de idioma ofrece español, inglés, portugués, chino simplificado, japonés y coreano; su preferencia se guarda con `idioma-lista-tareas`. Los datos introducidos por la persona usuaria se mantienen sin traducir.
+- Al volver a cargar la página, JavaScript restaura las preferencias. Los componentes usan variables CSS (`var(--text)`, `var(--surface)`…), sin duplicar reglas por tema.
