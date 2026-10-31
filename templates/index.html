@@ -1,3 +1,21 @@
+{% macro sidebar_user(class_name='') %}
+<div class="sidebar-user{% if class_name %} {{ class_name }}{% endif %}">
+    <div class="sidebar-user-identity">
+        {% if usuario_foto_perfil %}
+            <img class="sidebar-user-avatar" src="{{ usuario_foto_perfil }}" alt="Foto de perfil de {{ usuario_nombre or usuario_correo }}">
+        {% else %}
+            <span class="sidebar-user-avatar-fallback" aria-hidden="true">{{ (usuario_nombre or usuario_nombre_usuario or usuario_correo)[:1]|upper }}</span>
+        {% endif %}
+        <div class="sidebar-user-details">
+            <span class="sidebar-user-name" title="{{ usuario_nombre }}">{{ usuario_nombre or usuario_correo }}</span>
+            <span class="sidebar-user-mail" title="{{ usuario_correo }}">{% if usuario_nombre_usuario %}@{{ usuario_nombre_usuario }}{% else %}{{ usuario_correo }}{% endif %}</span>
+        </div>
+    </div>
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button class="button button-quiet" type="submit">Cerrar sesión</button>
+    </form>
+</div>
+{% endmacro %}
 <!DOCTYPE html>
 <html lang="es" data-theme="dark" data-layout="extended">
 <head>
@@ -38,28 +56,7 @@
                     <span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">Perfil</span>
                 </a>
             </nav>
-            <div class="sidebar-user">
-                <div class="sidebar-user-identity">
-                    {% if usuario_foto_perfil %}
-                        <img class="sidebar-user-avatar" src="{{ usuario_foto_perfil }}" alt="Foto de perfil de {{ usuario_nombre or usuario_correo }}">
-                    {% else %}
-                        <span class="sidebar-user-avatar-fallback" aria-hidden="true">{{ (usuario_nombre or usuario_nombre_usuario or usuario_correo)[:1]|upper }}</span>
-                    {% endif %}
-                    <div class="sidebar-user-details">
-                        <span class="sidebar-user-name" title="{{ usuario_nombre }}">{{ usuario_nombre or usuario_correo }}</span>
-                        <span class="sidebar-user-mail" title="{{ usuario_correo }}">{% if usuario_nombre_usuario %}@{{ usuario_nombre_usuario }}{% else %}{{ usuario_correo }}{% endif %}</span>
-                    </div>
-                </div>
-                <form action="{{ url_for('logout') }}" method="POST">
-                    <button class="button button-quiet" type="submit">Cerrar sesión</button>
-                </form>
-            </div>
-            <div class="sidebar-note">
-                <span class="sparkle" aria-hidden="true"></span>
-                <strong>Un poco más de enfoque.</strong>
-                <p>Una tarea a la vez. Haz espacio para lo importante.</p>
-            </div>
-            <p class="sidebar-status"><span aria-hidden="true">✓</span> Todo listo para avanzar</p>
+            {{ sidebar_user('sidebar-user-bottom') }}
         </aside>
 
         <div class="main-content">

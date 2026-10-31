@@ -77,6 +77,18 @@ class RutasTareasTest(unittest.TestCase):
         )
         self.repo_usuarios.obtener_foto_perfil.assert_called_once_with(self.usuario_id)
 
+    def test_muestra_solo_la_tarjeta_de_perfil_inferior(self):
+        respuesta = self.client.get("/")
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(
+            respuesta.data.count(b'<div class="sidebar-user sidebar-user-bottom">'),
+            1,
+        )
+        self.assertIn(b'class="sidebar-user sidebar-user-bottom"', respuesta.data)
+        self.assertNotIn("Un poco más de enfoque".encode(), respuesta.data)
+        self.assertNotIn("Todo listo para avanzar".encode(), respuesta.data)
+
     def test_filtros_validos_se_envian_al_repositorio(self):
         respuesta = self.client.get(
             "/?estado=pendientes&categoria=Trabajo&etiqueta=%23Urgente&orden=titulo"
