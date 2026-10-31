@@ -165,3 +165,7 @@ Preparamos y realizamos la presentación y exposición final de Expotécnica.
 ## Uso de herramientas de apoyo
 
 Durante el proyecto utilizamos la IA Sonnet de Claude como apoyo para consultar ideas, revisar alternativas y detectar posibles mejoras. Las decisiones, la implementación, las pruebas y la documentación fueron revisadas y realizadas por el equipo.
+
+## Actualización del repositorio — 31 de octubre
+
+Se sincronizaron las guías técnicas con el estado actual de la aplicación autenticada y de sus datos. También se actualizaron las ilustraciones de demostración para mostrar la barra lateral extendida con una sola tarjeta de perfil en la parte inferior. Las ilustraciones usan datos de ejemplo y no representan una cuenta real.

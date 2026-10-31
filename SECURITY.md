@@ -1,19 +1,52 @@
-# Modelado de Amenazas - Grupo 1
-## Proyecto: Estudi Web
+# Seguridad — Estudi Web
 
-La aplicación permite crear, listar, completar y eliminar tareas almacenadas en MongoDB. Los riesgos y las medidas de hardening se describen según el código actual y las mejoras recomendadas.
+Este documento describe los controles que existen en el código y los puntos que deben atenderse antes de desplegar la aplicación en producción. La configuración de red de MongoDB Atlas también debe limitarse desde el panel del proveedor.
 
-### 1. Amenaza: Acceso y modificación de tareas sin control de propietario
-- **Descripción del Riesgo:** La aplicación no implementa autenticación ni asocia las tareas a un usuario. Las rutas permiten listar y modificar tareas mediante su identificador, por lo que cualquier visitante puede acceder a las tareas compartidas o cambiar su identificador para intentar modificar o eliminar otra tarea (Broken Access Control / IDOR).
-- **Impacto:** Exposición de títulos, descripciones, fechas y etiquetas; además de modificación o eliminación no autorizada de tareas.
-- **Mitigación / Hardening:** Incorporar autenticación y guardar el identificador del propietario en cada tarea. En cada consulta, actualización y eliminación, filtrar por el identificador de la tarea y el usuario de la sesión activa. No confiar únicamente en que el identificador recibido sea válido.
+## Controles implementados
 
-### 2. Amenaza: Falsificación de solicitudes entre sitios (CSRF)
-- **Descripción del Riesgo:** Las rutas `/agregar`, `/toggle/<id_tarea>` y `/eliminar/<id_tarea>` realizan cambios mediante solicitudes POST, pero no se observa validación de tokens CSRF. Un sitio externo podría inducir al navegador de una víctima a enviar una solicitud no deseada.
-- **Impacto:** Creación, finalización o eliminación de tareas sin intención del usuario. El riesgo aumenta al incorporar autenticación basada en cookies.
-- **Mitigación / Hardening:** Proteger los formularios y las rutas POST con tokens CSRF, por ejemplo mediante Flask-WTF. Al añadir sesiones autenticadas, configurar cookies `SameSite` y `Secure` en producción y validar el origen de las solicitudes como defensa adicional.
+- Las rutas de trabajo requieren una sesión autenticada; solo `/login`, `/registro` y los recursos estáticos son públicos.
+- Las rutas de creación, listado, cambio de estado y eliminación de tareas usan el ID de la sesión para restringir las operaciones a las tareas propias. Los identificadores de tarea se validan como `ObjectId`.
+- Las contraseñas se guardan como hashes generados y verificados con las funciones de seguridad de Werkzeug, no como texto plano.
+- Los índices únicos de MongoDB protegen la unicidad del correo y del nombre de usuario normalizado.
+- La foto de perfil se limita a 1 MB y se aceptan firmas binarias de PNG, JPEG o WebP; la aplicación limita las solicitudes a 2 MB.
+- `.env` está excluido por `.gitignore`; no se deben incluir credenciales ni claves en el repositorio.
 
-### 3. Amenaza: Exposición de la aplicación por configuración de depuración o secretos débiles
-- **Descripción del Riesgo:** Al ejecutar directamente `app.py`, Flask se inicia con `debug=True`. Además, la aplicación acepta una clave secreta desde `FLASK_SECRET_KEY` pero genera una clave aleatoria si no está configurada, lo que puede invalidar sesiones entre reinicios y no garantiza una configuración adecuada en producción.
-- **Impacto:** El modo de depuración puede exponer información interna y, si el servidor de desarrollo queda accesible, aumentar el riesgo de ejecución de código. Una clave mal gestionada puede comprometer la integridad de las sesiones y la protección de formularios.
-- **Mitigación / Hardening:** Desactivar el modo debug fuera del entorno local y desplegar mediante un servidor WSGI de producción. Configurar una `FLASK_SECRET_KEY` larga, aleatoria y protegida como variable de entorno; no almacenarla en el repositorio. Mantener `MONGO_URI` fuera del código, restringir el acceso de red a MongoDB y usar un usuario de base de datos con permisos mínimos.
+## Riesgos y medidas recomendadas
+
+### Protección CSRF
+
+Los formularios que cambian datos usan POST, pero el código actual no configura tokens CSRF. Las sesiones de Flask se basan en cookies, por lo que un sitio externo podría intentar inducir una acción autenticada.
+
+**Recomendación:** añadir protección CSRF, por ejemplo con Flask-WTF, para todos los formularios POST; configurar cookies `Secure`, `HttpOnly` y `SameSite` en producción, y servir la aplicación exclusivamente mediante HTTPS.
+
+### Intentos repetidos de inicio de sesión
+
+El código no implementa límites de intentos ni demoras progresivas para el inicio de sesión.
+
+**Recomendación:** añadir limitación de frecuencia en el endpoint de acceso y monitorizar intentos fallidos, evitando registrar contraseñas u otros secretos.
+
+### Clave de sesión y modo de depuración
+
+`FLASK_SECRET_KEY` permite configurar la clave de firma. Si no está definida, `app.py` genera una clave aleatoria al iniciar, lo que invalida las sesiones al reiniciar. Además, la ejecución directa de `app.py` usa `debug=True`.
+
+**Recomendación:** definir una clave larga, aleatoria y persistente en el entorno de despliegue. Desactivar el modo debug fuera del entorno local y ejecutar mediante un servidor WSGI de producción.
+
+### Sesiones y cierre de sesión
+
+La sesión guarda el ID y algunos datos visibles de la cuenta en la cookie firmada de Flask. La firma evita modificaciones no autorizadas, pero no cifra su contenido.
+
+**Recomendación:** no guardar datos sensibles en la sesión, revisar la configuración de cookies para producción y rotar la clave si se sospecha que fue expuesta.
+
+### Tareas anteriores al inicio de sesión
+
+Los documentos creados antes de incorporar cuentas pueden carecer de `usuario_id`. La aplicación autenticada no los muestra ni los modifica al filtrar por el propietario; se necesitaría una migración controlada para asignarlos a una cuenta.
+
+### Configuración de MongoDB
+
+`MONGO_URI` y, opcionalmente, `USUARIOS_URI` deben mantenerse fuera del código. Una URI de MongoDB permite acceder a los datos según los permisos de la cuenta de base de datos.
+
+**Recomendación:** restringir acceso de red en Atlas, usar credenciales únicas con permisos mínimos, mantener los secretos fuera de Git y rotarlos si se exponen.
+
+## Uso local
+
+El servidor de desarrollo y `debug=True` son para desarrollo local únicamente. No exponer ese servidor directamente a Internet.

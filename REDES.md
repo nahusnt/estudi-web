@@ -1,12 +1,14 @@
-# REDES
+# REDES — propuesta de topología
 
 ## Diagrama de topología
 
-![Topología de red del proyecto Lista de Tareas](./images/diagrama-redes.png)
+![Propuesta de topología de red para el entorno de una PyME](./images/diagrama-redes.png)
+
+> **Alcance:** este diagrama y las direcciones siguientes describen una propuesta académica de red local. No representan la infraestructura desplegada de Estudi Web. La aplicación usa MongoDB Atlas según la configuración local de `MONGO_URI`; no se afirma que la base de datos de producción esté en un servidor dentro de la VLAN 10.
 
 ## Diseño y justificación
 
-La red está pensada para una PyME de desarrollo de software y consultoría que despliega la aplicación Lista de Tareas. Utiliza una topología de estrella extendida con segmentación lógica por VLAN.
+La red propuesta está pensada para una PyME de desarrollo de software y consultoría. Utiliza una topología de estrella extendida con segmentación lógica por VLAN.
 
 La topología centraliza las conexiones en el router y el switch administrable, facilita la gestión del tráfico y permite aislar fallas de los puestos finales. También permite sumar puestos sin modificar la estructura principal. El router realiza el enrutamiento entre VLAN y brinda salida a Internet; el switch se conecta al router mediante un enlace troncal.
 

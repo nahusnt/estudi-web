@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820" role="img" aria-labelledby="title description">
   <title id="title">Estudi Web: resumen en tema oscuro</title>
-  <desc id="description">Vista previa de Estudi Web con navegación a Crear, Resumen y Ajustes, estadísticas de tareas y gráfico circular en tema oscuro.</desc>
+  <desc id="description">Ilustración de demostración del resumen de Estudi Web. Muestra la navegación lateral y una sola tarjeta de perfil en la parte inferior.</desc>
   <defs>
     <linearGradient id="holo" x1="0" y1="0" x2="1" y2="1">
       <stop stop-color="#6ee7ff"/>
@@ -15,69 +15,95 @@
       <stop offset="1" stop-color="#d9dcff"/>
     </linearGradient>
     <radialGradient id="glow">
-      <stop stop-color="#8264ff" stop-opacity=".40"/>
+      <stop stop-color="#8264ff" stop-opacity=".4"/>
       <stop offset="1" stop-color="#8264ff" stop-opacity="0"/>
     </radialGradient>
     <filter id="shadow" x="-.15" y="-.15" width="1.3" height="1.4">
-      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity=".42"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity=".38"/>
     </filter>
   </defs>
   <rect width="1280" height="820" fill="#0b0a1a"/>
-  <circle cx="1070" cy="115" r="270" fill="url(#glow)"/>
-  <circle cx="170" cy="750" r="250" fill="#3cdcff" opacity=".10"/>
-  <rect x="164" y="28" width="952" height="764" rx="32" fill="#181630" fill-opacity=".45" stroke="#fff" stroke-opacity=".12"/>
+  <circle cx="1120" cy="90" r="270" fill="url(#glow)"/>
+  <circle cx="330" cy="800" r="230" fill="#3cdcff" opacity=".08"/>
 
-  <rect x="196" y="58" width="66" height="66" rx="22" fill="#fff" stroke="url(#holo)" stroke-width="2"/>
-  <path d="M211 79c7-7 14-7 21 0s14 7 21 0M211 92c7-7 14-7 21 0s14 7 21 0M211 105c7-7 14-7 21 0s14 7 21 0" fill="none" stroke="#302b63" stroke-width="4" stroke-linecap="round"/>
-  <text x="280" y="72" fill="#b8a8ff" font-family="Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="2">✦ ORGANIZA TU DÍA</text>
-  <text x="280" y="111" fill="url(#chrome)" font-family="Arial,sans-serif" font-size="37" font-weight="900">Estudi Web</text>
-  <text x="280" y="139" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="15">Un espacio sencillo para tus ideas y pendientes.</text>
-  <rect x="881" y="75" width="195" height="46" rx="23" fill="#16142e" fill-opacity=".8" stroke="#fff" stroke-opacity=".14"/>
-  <text x="913" y="104" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="15">◐  Modo claro</text>
+  <rect width="252" height="820" fill="#100f20"/>
+  <path d="M252 0v820" stroke="#fff" stroke-opacity=".14"/>
+  <rect x="28" y="27" width="38" height="38" rx="13" fill="#16142e" stroke="url(#holo)" stroke-width="2"/>
+  <path d="M37 39c4-4 8-4 12 0s8 4 12 0M37 47c4-4 8-4 12 0s8 4 12 0M37 55c4-4 8-4 12 0s8 4 12 0" fill="none" stroke="#b8a8ff" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="77" y="52" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="17" font-weight="700">Estudi Web</text>
+  <text x="30" y="108" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">ESPACIO</text>
+  <rect x="18" y="126" width="216" height="45" rx="12" fill="#b8a8ff" fill-opacity=".18"/>
+  <text x="38" y="155" fill="#d6ccff" font-family="Arial,sans-serif" font-size="15" font-weight="700">▦  Resumen</text>
+  <text x="38" y="207" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="15" font-weight="700">☑  Tareas</text>
+  <text x="38" y="252" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="15" font-weight="700">⚙  Ajustes</text>
+  <text x="38" y="297" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="15" font-weight="700">◉  Perfil</text>
 
-  <rect x="196" y="168" width="880" height="64" rx="32" fill="#181630" fill-opacity=".76" stroke="#fff" stroke-opacity=".12"/>
-  <rect x="490" y="175" width="284" height="50" rx="25" fill="#b8a8ff" fill-opacity=".18" stroke="#b8a8ff" stroke-opacity=".35"/>
-  <text x="330" y="208" text-anchor="middle" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="1">CREAR</text>
-  <text x="632" y="208" text-anchor="middle" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="1">RESUMEN</text>
-  <text x="922" y="208" text-anchor="middle" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="1">AJUSTES</text>
+  <rect x="18" y="656" width="216" height="146" rx="18" fill="#301916" stroke="#8b5a54" stroke-opacity=".64"/>
+  <circle cx="55" cy="693" r="22" fill="#080808" stroke="#fff" stroke-opacity=".22"/>
+  <text x="55" y="700" text-anchor="middle" fill="#ff6767" font-family="Arial,sans-serif" font-size="19" font-weight="700">N</text>
+  <text x="88" y="691" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="15" font-weight="700">nahusnt</text>
+  <text x="88" y="712" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="13">@nahusnt</text>
+  <rect x="35" y="738" width="182" height="48" rx="24" fill="#633831" stroke="#93605a" stroke-opacity=".7"/>
+  <text x="126" y="768" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="15" font-weight="700">Cerrar sesión</text>
 
-  <rect x="196" y="254" width="880" height="514" rx="28" fill="#181630" fill-opacity=".84" stroke="#fff" stroke-opacity=".18" filter="url(#shadow)"/>
-  <text x="228" y="302" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="22" font-weight="800" letter-spacing=".5">Tu resumen</text>
-  <text x="228" y="329" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="14">Una mirada rápida a tus pendientes y avances.</text>
+  <text x="286" y="37" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="12">Espacio  /  Resumen</text>
+  <text x="286" y="79" fill="url(#chrome)" font-family="Arial,sans-serif" font-size="30" font-weight="900">Una mente clara. Un día enfocado.</text>
+  <text x="286" y="105" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="14">Tu progreso y lo que necesita atención.</text>
+  <rect x="1067" y="31" width="181" height="42" rx="21" fill="#16142e" fill-opacity=".9" stroke="#fff" stroke-opacity=".14"/>
+  <text x="1092" y="58" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="14">◐  Modo claro</text>
 
-  <rect x="228" y="350" width="260" height="92" rx="20" fill="#9682ff" fill-opacity=".12" stroke="#fff" stroke-opacity=".12"/>
-  <text x="250" y="380" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="14">Total de tareas</text>
-  <text x="250" y="424" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="36" font-weight="800">12</text>
-  <rect x="506" y="350" width="260" height="92" rx="20" fill="#9682ff" fill-opacity=".12" stroke="#fff" stroke-opacity=".12"/>
-  <text x="528" y="380" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="14">Por hacer</text>
-  <text x="528" y="424" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="36" font-weight="800">8</text>
-  <rect x="784" y="350" width="260" height="92" rx="20" fill="#9682ff" fill-opacity=".12" stroke="#fff" stroke-opacity=".12"/>
-  <text x="806" y="380" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="14">Completadas</text>
-  <text x="806" y="424" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="36" font-weight="800">4</text>
+  <rect x="278" y="128" width="970" height="672" rx="26" fill="#181630" fill-opacity=".9" stroke="#fff" stroke-opacity=".18" filter="url(#shadow)"/>
+  <text x="306" y="169" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="20" font-weight="800">Tu progreso de hoy</text>
+  <text x="306" y="192" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="13">Una mirada clara a tus avances y próximas fechas límite.</text>
 
-  <rect x="228" y="462" width="374" height="270" rx="22" fill="#16142e" fill-opacity=".76" stroke="#fff" stroke-opacity=".14"/>
-  <text x="252" y="497" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="16" font-weight="700">Estado de tus tareas</text>
-  <circle cx="415" cy="593" r="66" fill="none" stroke="#6ee7ff" stroke-width="22"/>
-  <circle cx="415" cy="593" r="66" fill="none" stroke="url(#holo)" stroke-width="22" stroke-dasharray="276 415" transform="rotate(-90 415 593)"/>
-  <text x="415" y="591" text-anchor="middle" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="29" font-weight="800">67%</text>
-  <text x="415" y="613" text-anchor="middle" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="12">pendiente</text>
-  <circle cx="270" cy="681" r="6" fill="#a78bfa"/>
-  <text x="284" y="686" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="13">8 pendientes</text>
-  <circle cx="419" cy="681" r="6" fill="#6ee7ff"/>
-  <text x="433" y="686" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="13">4 completadas</text>
+  <g font-family="Arial,sans-serif">
+    <rect x="306" y="211" width="168" height="78" rx="16" fill="#9682ff" fill-opacity=".12" stroke="#fff" stroke-opacity=".12"/>
+    <text x="321" y="240" fill="#a9a8cc" font-size="12">Total de tareas</text><text x="321" y="275" fill="#f1f0ff" font-size="28" font-weight="800">12</text>
+    <rect x="486" y="211" width="168" height="78" rx="16" fill="#9682ff" fill-opacity=".12" stroke="#fff" stroke-opacity=".12"/>
+    <text x="501" y="240" fill="#a9a8cc" font-size="12">Por hacer</text><text x="501" y="275" fill="#f1f0ff" font-size="28" font-weight="800">8</text>
+    <rect x="666" y="211" width="168" height="78" rx="16" fill="#9682ff" fill-opacity=".12" stroke="#fff" stroke-opacity=".12"/>
+    <text x="681" y="240" fill="#a9a8cc" font-size="12">Completadas</text><text x="681" y="275" fill="#f1f0ff" font-size="28" font-weight="800">4</text>
+    <rect x="846" y="211" width="168" height="78" rx="16" fill="#9682ff" fill-opacity=".12" stroke="#fff" stroke-opacity=".12"/>
+    <text x="861" y="240" fill="#a9a8cc" font-size="12">Próximas · 7 días</text><text x="861" y="275" fill="#f1f0ff" font-size="28" font-weight="800">3</text>
+    <rect x="1026" y="211" width="194" height="78" rx="16" fill="#ff8291" fill-opacity=".1" stroke="#ff8291" stroke-opacity=".2"/>
+    <text x="1041" y="240" fill="#a9a8cc" font-size="12">Vencidas</text><text x="1041" y="275" fill="#ff8291" font-size="28" font-weight="800">1</text>
+  </g>
 
-  <rect x="620" y="462" width="424" height="270" rx="22" fill="#16142e" fill-opacity=".76" stroke="#fff" stroke-opacity=".14"/>
-  <text x="646" y="497" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="16" font-weight="700">Tareas por categoría</text>
-  <text x="646" y="544" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="14">Trabajo</text>
-  <text x="1017" y="544" text-anchor="end" fill="#b8a8ff" font-family="Arial,sans-serif" font-size="14" font-weight="700">4</text>
-  <rect x="646" y="554" width="372" height="8" rx="4" fill="#9682ff" fill-opacity=".16"/><rect x="646" y="554" width="124" height="8" rx="4" fill="url(#holo)"/>
-  <text x="646" y="593" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="14">Personal</text>
-  <text x="1017" y="593" text-anchor="end" fill="#b8a8ff" font-family="Arial,sans-serif" font-size="14" font-weight="700">3</text>
-  <rect x="646" y="603" width="372" height="8" rx="4" fill="#9682ff" fill-opacity=".16"/><rect x="646" y="603" width="93" height="8" rx="4" fill="url(#holo)"/>
-  <text x="646" y="642" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="14">Estudio</text>
-  <text x="1017" y="642" text-anchor="end" fill="#b8a8ff" font-family="Arial,sans-serif" font-size="14" font-weight="700">3</text>
-  <rect x="646" y="652" width="372" height="8" rx="4" fill="#9682ff" fill-opacity=".16"/><rect x="646" y="652" width="93" height="8" rx="4" fill="url(#holo)"/>
-  <text x="646" y="691" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="14">Otro</text>
-  <text x="1017" y="691" text-anchor="end" fill="#b8a8ff" font-family="Arial,sans-serif" font-size="14" font-weight="700">2</text>
-  <rect x="646" y="701" width="372" height="8" rx="4" fill="#9682ff" fill-opacity=".16"/><rect x="646" y="701" width="62" height="8" rx="4" fill="url(#holo)"/>
+  <rect x="306" y="306" width="914" height="100" rx="18" fill="#16142e" stroke="#fff" stroke-opacity=".14"/>
+  <text x="328" y="339" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="14" font-weight="700">Progreso completado</text>
+  <text x="1192" y="339" text-anchor="end" fill="#b8a8ff" font-family="Arial,sans-serif" font-size="18" font-weight="800">33%</text>
+  <rect x="328" y="354" width="870" height="10" rx="5" fill="#9682ff" fill-opacity=".16"/>
+  <rect x="328" y="354" width="290" height="10" rx="5" fill="url(#holo)"/>
+  <text x="328" y="388" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="12">4 de 12 tareas completadas</text>
+
+  <rect x="306" y="424" width="420" height="206" rx="18" fill="#16142e" stroke="#fff" stroke-opacity=".14"/>
+  <text x="328" y="457" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="15" font-weight="700">Estado de tus tareas</text>
+  <circle cx="516" cy="535" r="48" fill="none" stroke="#6ee7ff" stroke-width="17"/>
+  <circle cx="516" cy="535" r="48" fill="none" stroke="url(#holo)" stroke-width="17" stroke-dasharray="201 302" transform="rotate(-90 516 535)"/>
+  <text x="516" y="539" text-anchor="middle" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="22" font-weight="800">67%</text>
+  <text x="516" y="558" text-anchor="middle" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="10">pendiente</text>
+  <circle cx="353" cy="602" r="5" fill="#a78bfa"/><text x="365" y="607" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="12">8 pendientes</text>
+  <circle cx="500" cy="602" r="5" fill="#6ee7ff"/><text x="512" y="607" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="12">4 completadas</text>
+
+  <rect x="744" y="424" width="476" height="206" rx="18" fill="#16142e" stroke="#fff" stroke-opacity=".14"/>
+  <text x="768" y="457" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="15" font-weight="700">Tareas por categoría</text>
+  <g font-family="Arial,sans-serif" font-size="12">
+    <text x="768" y="495" fill="#f1f0ff">Trabajo</text><text x="1194" y="495" text-anchor="end" fill="#b8a8ff" font-weight="700">4</text>
+    <rect x="768" y="503" width="426" height="7" rx="4" fill="#9682ff" fill-opacity=".16"/><rect x="768" y="503" width="142" height="7" rx="4" fill="url(#holo)"/>
+    <text x="768" y="534" fill="#f1f0ff">Personal</text><text x="1194" y="534" text-anchor="end" fill="#b8a8ff" font-weight="700">3</text>
+    <rect x="768" y="542" width="426" height="7" rx="4" fill="#9682ff" fill-opacity=".16"/><rect x="768" y="542" width="107" height="7" rx="4" fill="url(#holo)"/>
+    <text x="768" y="573" fill="#f1f0ff">Estudio</text><text x="1194" y="573" text-anchor="end" fill="#b8a8ff" font-weight="700">3</text>
+    <rect x="768" y="581" width="426" height="7" rx="4" fill="#9682ff" fill-opacity=".16"/><rect x="768" y="581" width="107" height="7" rx="4" fill="url(#holo)"/>
+    <text x="768" y="612" fill="#f1f0ff">Otro</text><text x="1194" y="612" text-anchor="end" fill="#b8a8ff" font-weight="700">2</text>
+  </g>
+
+  <rect x="306" y="648" width="914" height="128" rx="18" fill="#16142e" stroke="#fff" stroke-opacity=".14"/>
+  <text x="328" y="680" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="15" font-weight="700">Fechas límite</text>
+  <text x="328" y="701" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="11">Tareas atrasadas y pendientes para los próximos siete días.</text>
+  <text x="328" y="739" fill="#ff8291" font-family="Arial,sans-serif" font-size="11" font-weight="700">VENCIDAS</text>
+  <text x="418" y="739" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="12">Entregar informe · Trabajo</text>
+  <text x="1188" y="739" text-anchor="end" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="12">28/10/2026</text>
+  <text x="328" y="761" fill="#b8a8ff" font-family="Arial,sans-serif" font-size="11" font-weight="700">PRÓXIMAS</text>
+  <text x="418" y="761" fill="#f1f0ff" font-family="Arial,sans-serif" font-size="12">Repasar apuntes · Estudio</text>
+  <text x="1188" y="761" text-anchor="end" fill="#a9a8cc" font-family="Arial,sans-serif" font-size="12">02/11/2026</text>
 </svg>

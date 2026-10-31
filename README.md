@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB Atlas">
   </p>
 
-   <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#android">📱 Android</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-cuenta-y-perfil">👤 Cuenta y perfil</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
+   <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#android">📱 Android</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-cuenta-y-perfil">👤 Cuenta y perfil</a> · <a href="#-estructura-del-proyecto">📁 Estructura</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
 </div>
 
 ---
@@ -22,14 +22,14 @@
 
 <p align="center">
   <a href="./images/vista-clara.svg">
-    <img src="./images/vista-clara.svg" alt="Resumen de tareas de Estudi Web en modo claro" width="49%">
+    <img src="./images/vista-clara.svg" alt="Vista demostrativa de Estudi Web en modo claro, con barra lateral y perfil abajo" width="49%">
   </a>
   <a href="./images/vista-oscura.svg">
-    <img src="./images/vista-oscura.svg" alt="Resumen de tareas de Estudi Web en modo oscuro" width="49%">
+    <img src="./images/vista-oscura.svg" alt="Vista demostrativa de Estudi Web en modo oscuro, con barra lateral y perfil abajo" width="49%">
   </a>
 </p>
 
-<p align="center"><sub>☀️ Tema claro · 🌙 Tema oscuro · Crear, consultar tu resumen y personalizar tus ajustes</sub></p>
+<p align="center"><sub>☀️ Tema claro · 🌙 Tema oscuro · Barra lateral con una sola tarjeta de perfil · Resumen de tareas</sub></p>
 
 <a id="android"></a>
 
@@ -50,12 +50,12 @@
 - 🔎 Filtrar por estado, categoría o etiqueta, y ordenar por fecha o título.
 - 📊 Consultar un resumen con progreso, categorías, tareas vencidas y próximas fechas límite.
 - 🧭 Alternar entre la interfaz anterior con navegación superior y la nueva barra lateral; la preferencia queda guardada en el navegador.
-- ⚙️ Personalizar el tema claro/oscuro y el espacio de la lista; las preferencias quedan guardadas en el navegador.
+- ⚙️ Personalizar el diseño, tema, paleta, idioma, tamaño del texto, densidad, contraste y animaciones; las preferencias quedan guardadas en el navegador.
 - 🔐 Crear una cuenta con correo y nombre de usuario único; iniciar sesión con cualquiera de los dos identificadores.
 - 👤 Personalizar el perfil con foto, nombre visible, descripción y etiquetas.
 - 👁️ Mostrar u ocultar la contraseña desde el formulario de inicio de sesión.
 - 🖼️ Ver la foto de perfil junto al nombre de la cuenta en la barra lateral; si no hay foto, se muestra una inicial.
-- ☁️ Guardar tus tareas en MongoDB, ya sea tu propia base de datos u otra externa.
+- ☁️ Guardar tus tareas en la base `lista_tareas_db` de MongoDB, en el clúster indicado por `MONGO_URI`.
 
 ## 👤 Cuenta y perfil
 
@@ -80,7 +80,7 @@ Ejecuta las pruebas automatizadas desde la raíz del proyecto:
 python -m unittest discover -s tests -v
 ```
 
-Las 44 pruebas actuales validan las rutas principales, la autenticación, el perfil y las reglas de los modelos sin necesitar una conexión a MongoDB.
+Las 45 pruebas automatizadas validan las rutas principales, la autenticación, el perfil y las reglas de los modelos sin necesitar una conexión a MongoDB.
 
 
 ## 🧰 Tecnologías
@@ -90,6 +90,60 @@ Las 44 pruebas actuales validan las rutas principales, la autenticación, el per
 | Python y Flask | MongoDB Atlas y PyMongo |
 | HTML, CSS y JavaScript | Variables de entorno con `python-dotenv` |
 
+## 📁 Estructura del proyecto
+
+Este es el mapa de las carpetas y archivos principales del repositorio. La carpeta raíz es la que se abre en VS Code; en la rama principal se llama `main`.
+
+```text
+estudi-web/
+├── app.py
+├── modelos.py
+├── usuarios.py
+├── requirements.txt
+├── README.md
+├── CAMBIOS.md
+├── REDES.md
+├── SECURITY.md
+├── docs/
+├── images/
+├── static/
+│   ├── css/
+│   ├── images/
+│   └── js/
+├── templates/
+└── tests/
+```
+
+### Archivos de la raíz
+
+| Archivo | Para qué sirve |
+|---|---|
+| `app.py` | Punto de entrada del sitio. Configura Flask y MongoDB, define las rutas, controla las sesiones y conecta los formularios con los modelos y las vistas. |
+| `modelos.py` | Define las categorías y tareas, sus validaciones y `RepositorioTareas`, que lee y escribe tareas en MongoDB. |
+| `usuarios.py` | Define el modelo `Usuario` y `RepositorioUsuarios`, que registran y autentican cuentas y guardan sus datos de perfil. |
+| `requirements.txt` | Lista las dependencias de Python que se instalan con `pip`. |
+| `README.md` | Documentación principal: funciones, instalación, configuración, pruebas y estructura del proyecto. |
+| `CAMBIOS.md` | Resumen de cambios y notas de trabajo sobre las cuentas y perfiles. |
+| `REDES.md` | Documenta el diagrama y la propuesta de topología de red del proyecto. |
+| `SECURITY.md` | Describe amenazas de seguridad identificadas y recomendaciones de mitigación. |
+| `.gitignore` | Indica qué archivos locales o generados Git debe ignorar, como `.env`, los entornos virtuales y `__pycache__`. |
+
+### Carpetas
+
+| Carpeta | Contenido |
+|---|---|
+| `docs/` | Documentación de arquitectura (`ARQUITECTURA.md`), modelo de datos (`MODELO_DATOS.md`) y diario de trabajo (`DIARIO.md`). |
+| `images/` | Recursos para documentación y presentación: capturas de la interfaz en temas claro y oscuro, y el diagrama de red usado en `REDES.md`. |
+| `static/css/` | Hojas de estilo del navegador. `styles.css` contiene los temas, componentes y reglas responsive. |
+| `static/images/` | Imágenes que usa la interfaz, como el logotipo (`logo.png` y `logo-waves.svg`). |
+| `static/js/` | JavaScript del navegador (`app.js`) y su documentación (`DOCUMENTACION_FRONTEND.md`); gestiona preferencias e interacciones de la interfaz. |
+| `templates/` | Vistas HTML renderizadas por Flask/Jinja: `index.html` para la aplicación, `login.html` para iniciar sesión y `registro.html` para crear una cuenta. |
+| `tests/` | Pruebas automatizadas de las rutas, autenticación, modelos y repositorios. `test_app.py` las reúne. |
+
+Los directorios `__pycache__/` y los archivos `.pyc` los genera Python al ejecutar la aplicación o las pruebas; no son código fuente. El entorno virtual (`.venv/`) y el archivo local `.env` tampoco forman parte del repositorio.
+
+Las imágenes `images/vista-clara.svg` y `images/vista-oscura.svg` son ilustraciones de demostración del resumen; usan datos de ejemplo y no son capturas de una sesión real.
+
 ## 🧩 Organización del backend
 
 - `Tarea` mantiene privados sus datos y valida el título y las etiquetas al crear cada tarea.
@@ -97,6 +151,17 @@ Las 44 pruebas actuales validan las rutas principales, la autenticación, el per
 - `RepositorioTareas` encapsula las operaciones de lectura y escritura en MongoDB.
 - `Usuario` valida el correo, el nombre de usuario y los datos del perfil; las contraseñas se almacenan únicamente como hash.
 - `RepositorioUsuarios` gestiona el registro, la autenticación por correo o nombre de usuario y la persistencia del perfil en la colección `usuarios`.
+
+## ⚙️ Variables de entorno
+
+Guarda la configuración privada en `.env` en la raíz del proyecto. `.gitignore` excluye ese archivo del repositorio.
+
+| Variable | Obligatoria | Uso |
+|---|---|---|
+| `MONGO_URI` | Sí | URI del clúster MongoDB. La aplicación usa la base `lista_tareas_db` para las tareas. |
+| `USUARIOS_URI` | No | URI de un clúster distinto para las cuentas. Si se omite, usa `MONGO_URI`. |
+| `USUARIOS_DB` | No | Base de datos de cuentas; por defecto `estudi_usuarios_db`. |
+| `FLASK_SECRET_KEY` | Recomendable | Clave persistente y privada para firmar las sesiones Flask. Si se omite, se genera una clave aleatoria al iniciar y las sesiones no sobreviven a un reinicio. |
 
 ## 🚀 Empezar
 
@@ -151,6 +216,8 @@ Las 44 pruebas actuales validan las rutas principales, la autenticación, el per
    ```
 
    Abre `.env` y agrega `MONGO_URI` con la URI de tu clúster de Atlas.
+
+   Si quieres separar las cuentas en otro clúster, también puedes definir `USUARIOS_URI`. Para producción, define además una `FLASK_SECRET_KEY` persistente y secreta.
 
 5. Inicia la aplicación:
 
