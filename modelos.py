@@ -153,14 +153,19 @@ class RepositorioTareas:
         self.__coleccion = db["tareas"]
         self.__coleccion.create_index("titulo")
 
-    def guardar(self, tarea):
-        resultado = self.__coleccion.insert_one(tarea.a_diccionario())
+    def guardar(self, tarea, usuario_id=None):
+        documento = tarea.a_diccionario()
+        if usuario_id:
+            documento["usuario_id"] = usuario_id
+        resultado = self.__coleccion.insert_one(documento)
         tarea.asignar_id(str(resultado.inserted_id))
         return tarea
 
-    def cargar_todas(self, estado=None, categoria=None, etiqueta=None, orden="recientes"):
+    def cargar_todas(self, estado=None, categoria=None, etiqueta=None, orden="recientes", usuario_id=None):
         # Recupera solo los campos usados por la vista y evita una lista intermedia.
         filtros = {}
+        if usuario_id:
+            filtros["usuario_id"] = usuario_id
         if estado is not None:
             filtros["completada"] = estado
         if categoria:
@@ -206,10 +211,14 @@ class RepositorioTareas:
     def listar_etiquetas(self):
         return sorted(self.__coleccion.distinct("etiquetas"), key=str.casefold)
 
-    def cambiar_estado(self, id_tarea):
+    def cambiar_estado(self, id_tarea, usuario_id=None):
         # Invierte el estado de forma atomica en una sola operacion de MongoDB.
+        # El usuario_id limita la operacion a tareas propias.
+        consulta = {"_id": ObjectId(id_tarea)}
+        if usuario_id:
+            consulta["usuario_id"] = usuario_id
         self.__coleccion.update_one(
-            {"_id": ObjectId(id_tarea)},
+            consulta,
             [
                 {
                     "$set": {
@@ -221,5 +230,8 @@ class RepositorioTareas:
             ],
         )
 
-    def eliminar(self, id_tarea):
-        self.__coleccion.delete_one({"_id": ObjectId(id_tarea)})
+    def eliminar(self, id_tarea, usuario_id=None):
+        consulta = {"_id": ObjectId(id_tarea)}
+        if usuario_id:
+            consulta["usuario_id"] = usuario_id
+        self.__coleccion.delete_one(consulta)

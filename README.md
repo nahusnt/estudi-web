@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB Atlas">
   </p>
 
-  <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#android">📱 Android</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
+   <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#android">📱 Android</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-cuenta-y-perfil">👤 Cuenta y perfil</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
 </div>
 
 ---
@@ -51,7 +51,26 @@
 - 📊 Consultar un resumen con progreso, categorías, tareas vencidas y próximas fechas límite.
 - 🧭 Alternar entre la interfaz anterior con navegación superior y la nueva barra lateral; la preferencia queda guardada en el navegador.
 - ⚙️ Personalizar el tema claro/oscuro y el espacio de la lista; las preferencias quedan guardadas en el navegador.
+- 🔐 Crear una cuenta con correo y nombre de usuario único; iniciar sesión con cualquiera de los dos identificadores.
+- 👤 Personalizar el perfil con foto, nombre visible, descripción y etiquetas.
+- 👁️ Mostrar u ocultar la contraseña desde el formulario de inicio de sesión.
+- 🖼️ Ver la foto de perfil junto al nombre de la cuenta en la barra lateral; si no hay foto, se muestra una inicial.
 - ☁️ Guardar tus tareas en MongoDB, ya sea tu propia base de datos u otra externa.
+
+## 👤 Cuenta y perfil
+
+Al abrir la aplicación por primera vez, crea una cuenta desde **Crear una cuenta**. El nombre de usuario debe tener entre 3 y 24 caracteres y solo puede contener letras, números, guiones y guiones bajos. Es único y no distingue entre mayúsculas y minúsculas.
+
+En el inicio de sesión puedes escribir tu correo o tu nombre de usuario. Usa el botón con el icono del ojo para alternar la visibilidad de la contraseña. Las cuentas creadas antes de incorporar el nombre de usuario pueden seguir iniciando sesión con su correo y elegir uno desde la sección **Perfil**.
+
+Desde **Perfil** puedes editar estos datos:
+
+- **Foto:** PNG, JPG o WebP de hasta 1 MB. Se guarda como dato de imagen en el documento de usuario de MongoDB.
+- **Nombre visible:** hasta 60 caracteres.
+- **Descripción:** hasta 280 caracteres.
+- **Etiquetas:** hasta 8, con un máximo de 24 caracteres cada una; sepáralas con comas.
+
+La foto y el nombre también se muestran en la barra lateral junto al botón para cerrar sesión.
 
 ## 🧪 Pruebas
 
@@ -61,7 +80,7 @@ Ejecuta las pruebas automatizadas desde la raíz del proyecto:
 python -m unittest discover -s tests -v
 ```
 
-Las pruebas validan las rutas principales y reglas del modelo sin necesitar una conexión a MongoDB.
+Las 44 pruebas actuales validan las rutas principales, la autenticación, el perfil y las reglas de los modelos sin necesitar una conexión a MongoDB.
 
 
 ## 🧰 Tecnologías
@@ -76,6 +95,8 @@ Las pruebas validan las rutas principales y reglas del modelo sin necesitar una 
 - `Tarea` mantiene privados sus datos y valida el título y las etiquetas al crear cada tarea.
 - `Categoria` centraliza las categorías permitidas.
 - `RepositorioTareas` encapsula las operaciones de lectura y escritura en MongoDB.
+- `Usuario` valida el correo, el nombre de usuario y los datos del perfil; las contraseñas se almacenan únicamente como hash.
+- `RepositorioUsuarios` gestiona el registro, la autenticación por correo o nombre de usuario y la persistencia del perfil en la colección `usuarios`.
 
 ## 🚀 Empezar
 
@@ -120,16 +141,16 @@ Las pruebas validan las rutas principales y reglas del modelo sin necesitar una 
    **Windows PowerShell**
 
    ```powershell
-   Copy-Item .env.example .env
+   New-Item -Path .env -ItemType File
    ```
 
    **macOS o Linux**
 
    ```bash
-   cp .env.example .env
+   touch .env
    ```
 
-   Abre `.env` y configura `MONGO_URI` con la URI de tu clúster de Atlas.
+   Abre `.env` y agrega `MONGO_URI` con la URI de tu clúster de Atlas.
 
 5. Inicia la aplicación:
 
@@ -143,7 +164,7 @@ Las pruebas validan las rutas principales y reglas del modelo sin necesitar una 
 
 En Atlas, crea un usuario de base de datos con permisos de lectura y escritura y agrega la IP de tu computadora en **Network Access**. Este usuario es distinto de tu usuario para iniciar sesión en Atlas.
 
-La plantilla `.env.example` muestra el formato esperado:
+Agrega esta variable a tu archivo local `.env`, reemplazando los valores de ejemplo:
 
 ```dotenv
 MONGO_URI=mongodb+srv://usuario:contraseña@cluster0.xxxxx.mongodb.net/

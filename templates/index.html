@@ -34,7 +34,26 @@
                 <a href="{{ url_for('index', seccion='ajustes') }}" aria-label="Configuración" {% if seccion == "ajustes" %}aria-current="page"{% endif %}>
                     <span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Ajustes</span>
                 </a>
+                <a href="{{ url_for('index', seccion='perfil') }}" aria-label="Perfil" {% if seccion == "perfil" %}aria-current="page"{% endif %}>
+                    <span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">Perfil</span>
+                </a>
             </nav>
+            <div class="sidebar-user">
+                <div class="sidebar-user-identity">
+                    {% if usuario_foto_perfil %}
+                        <img class="sidebar-user-avatar" src="{{ usuario_foto_perfil }}" alt="Foto de perfil de {{ usuario_nombre or usuario_correo }}">
+                    {% else %}
+                        <span class="sidebar-user-avatar-fallback" aria-hidden="true">{{ (usuario_nombre or usuario_nombre_usuario or usuario_correo)[:1]|upper }}</span>
+                    {% endif %}
+                    <div class="sidebar-user-details">
+                        <span class="sidebar-user-name" title="{{ usuario_nombre }}">{{ usuario_nombre or usuario_correo }}</span>
+                        <span class="sidebar-user-mail" title="{{ usuario_correo }}">{% if usuario_nombre_usuario %}@{{ usuario_nombre_usuario }}{% else %}{{ usuario_correo }}{% endif %}</span>
+                    </div>
+                </div>
+                <form action="{{ url_for('logout') }}" method="POST">
+                    <button class="button button-quiet" type="submit">Cerrar sesión</button>
+                </form>
+            </div>
             <div class="sidebar-note">
                 <span class="sparkle" aria-hidden="true"></span>
                 <strong>Un poco más de enfoque.</strong>
@@ -47,16 +66,18 @@
         <header class="page-header">
             <div class="page-context">
                 <p class="breadcrumb">Espacio <span aria-hidden="true">/</span>
-                    {% if seccion == "resumen" %}Resumen{% elif seccion == "ajustes" %}Configuración{% else %}Tareas{% endif %}
+                    {% if seccion == "resumen" %}Resumen{% elif seccion == "ajustes" %}Configuración{% elif seccion == "perfil" %}Perfil{% else %}Tareas{% endif %}
                 </p>
                 <h1 class="page-title">
                     {% if seccion == "resumen" %}Una mente clara. Un día enfocado.
                     {% elif seccion == "ajustes" %}Configuración
+                    {% elif seccion == "perfil" %}Tu perfil
                     {% else %}Tareas{% endif %}
                 </h1>
                 <p class="subtitle">
                     {% if seccion == "resumen" %}Tu progreso y lo que necesita atención.
                     {% elif seccion == "ajustes" %}Tu espacio, a tu manera.
+                    {% elif seccion == "perfil" %}Personaliza los datos de tu cuenta.
                     {% else %}Organiza lo que importa y avanza a tu ritmo.{% endif %}
                 </p>
             </div>
@@ -297,6 +318,63 @@
                     {% endif %}
                 </section>
             </div>
+        </section>
+
+        <section class="profile-section" aria-labelledby="profile-title" {% if seccion != "perfil" %}hidden{% endif %}>
+            {% if perfil %}
+                <div class="panel glass profile-panel">
+                    <div class="profile-heading">
+                        {% if perfil.foto_perfil %}
+                            <img class="profile-avatar" src="{{ perfil.foto_perfil }}" alt="Foto de perfil de {{ perfil.nombre }}">
+                        {% else %}
+                            <div class="profile-avatar profile-avatar-placeholder" aria-hidden="true">{{ perfil.nombre[:1]|upper }}</div>
+                        {% endif %}
+                        <div class="profile-heading-copy">
+                            <p class="eyebrow">Perfil de cuenta</p>
+                            <h2 id="profile-title">{{ perfil.nombre }}</h2>
+                            <p class="profile-handle">{% if perfil.nombre_usuario %}@{{ perfil.nombre_usuario }}{% else %}Elige tu nombre de usuario{% endif %}</p>
+                            <p class="profile-description">{{ perfil.descripcion or "Todavía no agregaste una descripción." }}</p>
+                            {% if perfil.etiquetas %}
+                                <div class="profile-tags" aria-label="Etiquetas del perfil">
+                                    {% for etiqueta in perfil.etiquetas %}<span class="profile-tag">#{{ etiqueta }}</span>{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <form action="{{ url_for('actualizar_perfil') }}" method="POST" enctype="multipart/form-data" class="profile-form">
+                        <div class="profile-fields">
+                            <label class="field">
+                                <span>Nombre de usuario único</span>
+                                <input type="text" name="nombre_usuario" value="{{ perfil.nombre_usuario or '' }}" minlength="3" maxlength="24" pattern="[A-Za-z0-9_-]{3,24}" title="Usa entre 3 y 24 letras, números, guiones o guiones bajos." required autocomplete="username">
+                            </label>
+                            <label class="field">
+                                <span>Nombre visible</span>
+                                <input type="text" name="nombre" value="{{ perfil.nombre }}" maxlength="60" required autocomplete="name">
+                            </label>
+                            <label class="field profile-field-wide">
+                                <span>Descripción</span>
+                                <textarea name="descripcion" rows="4" maxlength="280" placeholder="Cuéntanos algo sobre ti">{{ perfil.descripcion }}</textarea>
+                            </label>
+                            <label class="field profile-field-wide">
+                                <span>Etiquetas personalizadas</span>
+                                <input type="text" name="etiquetas" value="{{ perfil.etiquetas|join(', ') }}" maxlength="210" placeholder="estudiante, diseño, música" aria-describedby="profile-tags-help">
+                                <small id="profile-tags-help">Hasta 8 etiquetas, separadas por comas. Usa letras, números, guiones o guiones bajos.</small>
+                            </label>
+                            <label class="field profile-field-wide">
+                                <span>Foto de perfil</span>
+                                <input type="file" name="foto_perfil" accept="image/png,image/jpeg,image/webp" aria-describedby="profile-photo-help">
+                                <small id="profile-photo-help">PNG, JPG o WebP; máximo 1 MB.</small>
+                            </label>
+                        </div>
+                        {% if perfil.foto_perfil %}
+                            <label class="profile-remove-photo"><input type="checkbox" name="eliminar_foto" value="1"> Quitar foto actual</label>
+                        {% endif %}
+                        <button class="button button-primary" type="submit">Guardar perfil</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="panel glass"><p class="subtitle">No se pudo cargar el perfil. Vuelve a iniciar sesión.</p></div>
+            {% endif %}
         </section>
 
         <section class="settings-section" aria-labelledby="settings-title" {% if seccion != "ajustes" %}hidden{% endif %}>

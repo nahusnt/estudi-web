@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b0a1a">
+    <meta name="description" content="Estudi Web: inicia sesión para organizar tus tareas.">
+    <title>Iniciar sesión | Estudi Web</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        // Aplica el tema y la paleta guardados por la app sin depender de app.js.
+        (function () {
+            try {
+                var tema = localStorage.getItem("tema-lista-tareas");
+                var paleta = localStorage.getItem("paleta-lista-tareas");
+                if (tema === "light" || tema === "amoled" || tema === "dark") {
+                    document.documentElement.dataset.theme = tema;
+                }
+                if (paleta) { document.documentElement.dataset.palette = paleta; }
+            } catch (e) { /* por si el navegador bloquea localStorage */ }
+        })();
+    </script>
+</head>
+<body>
+    <div class="bg-orb bg-orb-one" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-two" aria-hidden="true"></div>
+
+    <main class="auth-shell">
+        <section class="panel glass auth-card" aria-labelledby="login-title">
+            <a class="auth-brand" href="{{ url_for('login') }}">
+                <span class="brand-logo" role="img" aria-label="Logo de Estudi Web"></span>
+                <span>Estudi Web</span>
+            </a>
+            <h1 id="login-title">Iniciar sesión</h1>
+            <p class="subtitle">Entra a tu espacio de tareas.</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    <div class="messages" aria-live="polite">
+                        {% for tipo, mensaje in mensajes %}
+                            <p class="notice notice-{{ tipo }}">{{ mensaje }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('login') }}" method="POST" class="auth-form">
+                <label class="field">
+                    <span>Correo o nombre de usuario</span>
+                    <input type="text" name="identificador" placeholder="nombre@dominio.com o usuario" required autocomplete="username">
+                </label>
+                <label class="field">
+                    <span>Contraseña</span>
+                    <span class="password-input-wrap">
+                        <input id="login-password" type="password" name="contrasena" placeholder="Tu contraseña" required autocomplete="current-password">
+                        <button class="password-toggle" type="button" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="login-password">
+                            <svg class="password-icon-show" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8" />
+                            </svg>
+                            <svg class="password-icon-hide" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden>
+                                <path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a15.7 15.7 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.2 0 2.3-.3 3.3-.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </span>
+                </label>
+                <button class="button button-primary" type="submit">Entrar</button>
+            </form>
+
+            <p class="auth-alt">¿No tienes cuenta? <a class="text-link" href="{{ url_for('registro') }}">Crear una cuenta</a></p>
+        </section>
+    </main>
+    <script>
+        const passwordInput = document.querySelector("#login-password");
+        const passwordToggle = document.querySelector(".password-toggle");
+        const showIcon = document.querySelector(".password-icon-show");
+        const hideIcon = document.querySelector(".password-icon-hide");
+
+        passwordToggle.addEventListener("click", () => {
+            const isVisible = passwordInput.type === "password";
+            passwordInput.type = isVisible ? "text" : "password";
+            passwordToggle.setAttribute("aria-pressed", String(isVisible));
+            passwordToggle.setAttribute("aria-label", isVisible ? "Ocultar contraseña" : "Mostrar contraseña");
+            showIcon.hidden = isVisible;
+            hideIcon.hidden = !isVisible;
+        });
+    </script>
+</body>
+</html>
