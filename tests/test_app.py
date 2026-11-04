@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, Mock, patch
 from datetime import date, timedelta
 
 from bson import ObjectId
+from pymongo.errors import PyMongoError
 
 with patch("pymongo.MongoClient"):
     import app as app_module
@@ -64,6 +65,36 @@ class RutasTareasTest(unittest.TestCase):
             usuario_id=self.usuario_id,
         )
         self.repo.listar_etiquetas.assert_called_once_with()
+
+    def test_texto_de_tarea_se_escapa_al_renderizarse(self):
+        texto_usuario = "<script>alert(1)</script>"
+        respuesta_agregar = self.client.post(
+            "/agregar",
+            data={"titulo": texto_usuario, "categoria": "Personal"},
+        )
+        tarea = self.repo.guardar.call_args.args[0]
+        tarea.asignar_id("507f1f77bcf86cd799439011")
+        self.repo.cargar_todas.return_value = [tarea]
+
+        respuesta_vista = self.client.get("/")
+
+        self.assertEqual(respuesta_agregar.status_code, 302)
+        self.assertEqual(tarea.titulo, texto_usuario)
+        self.assertEqual(respuesta_vista.status_code, 200)
+        self.assertIn(b"&lt;script&gt;alert(1)&lt;/script&gt;", respuesta_vista.data)
+        self.assertNotIn(texto_usuario.encode(), respuesta_vista.data)
+
+    def test_error_de_mongodb_devuelve_mensaje_generico_y_registra_detalle(self):
+        detalle_interno = "detalle interno de conexión"
+        self.repo.cargar_todas.side_effect = PyMongoError(detalle_interno)
+
+        with self.assertLogs(app_module.app.logger, level="ERROR") as registros:
+            respuesta = self.client.get("/")
+
+        self.assertEqual(respuesta.status_code, 500)
+        self.assertIn("error interno".encode(), respuesta.data)
+        self.assertNotIn(detalle_interno.encode(), respuesta.data)
+        self.assertIn(detalle_interno, "\n".join(registros.output))
 
     def test_foto_de_perfil_se_muestra_en_la_barra_lateral(self):
         self.repo_usuarios.obtener_foto_perfil.return_value = "data:image/png;base64,AAAA"

@@ -6,7 +6,9 @@ Este documento describe los controles que existen en el código y los puntos que
 
 - Las rutas de trabajo requieren una sesión autenticada; solo `/login`, `/registro` y los recursos estáticos son públicos.
 - Las rutas de creación, listado, cambio de estado y eliminación de tareas usan el ID de la sesión para restringir las operaciones a las tareas propias. Los identificadores de tarea se validan como `ObjectId`.
+- Los modelos validan los campos antes de guardarlos en MongoDB. Las vistas HTML usan el autoescape de Jinja para mostrar el texto del usuario sin ejecutar etiquetas ni scripts; los datos se guardan como texto original, sin doble escape.
 - Las contraseñas se guardan como hashes generados y verificados con las funciones de seguridad de Werkzeug, no como texto plano.
+- Los errores de MongoDB se registran en el servidor y devuelven un mensaje genérico, sin exponer detalles de conexión o consultas.
 - Los índices únicos de MongoDB protegen la unicidad del correo y del nombre de usuario normalizado.
 - La foto de perfil se limita a 1 MB y se aceptan firmas binarias de PNG, JPEG o WebP; la aplicación limita las solicitudes a 2 MB.
 - `.env` está excluido por `.gitignore`; no se deben incluir credenciales ni claves en el repositorio.
@@ -27,9 +29,9 @@ El código no implementa límites de intentos ni demoras progresivas para el ini
 
 ### Clave de sesión y modo de depuración
 
-`FLASK_SECRET_KEY` permite configurar la clave de firma. Si no está definida, `app.py` genera una clave aleatoria al iniciar, lo que invalida las sesiones al reiniciar. Además, la ejecución directa de `app.py` usa `debug=True`.
+`FLASK_SECRET_KEY` permite configurar la clave de firma. Si no está definida, `app.py` genera una clave aleatoria al iniciar, lo que invalida las sesiones al reiniciar. La ejecución directa de `app.py` mantiene el modo debug desactivado; solo se activa explícitamente con `FLASK_DEBUG=1` o `FLASK_DEBUG=true`.
 
-**Recomendación:** definir una clave larga, aleatoria y persistente en el entorno de despliegue. Desactivar el modo debug fuera del entorno local y ejecutar mediante un servidor WSGI de producción.
+**Recomendación:** definir una clave larga, aleatoria y persistente en el entorno de despliegue. No activar debug en producción y ejecutar mediante un servidor WSGI de producción.
 
 ### Sesiones y cierre de sesión
 
@@ -49,4 +51,4 @@ Los documentos creados antes de incorporar cuentas pueden carecer de `usuario_id
 
 ## Uso local
 
-El servidor de desarrollo y `debug=True` son para desarrollo local únicamente. No exponer ese servidor directamente a Internet.
+El servidor de desarrollo es para desarrollo local únicamente. No exponer ese servidor directamente a Internet ni activar debug en producción.

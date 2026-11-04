@@ -6,7 +6,7 @@ from bson import ObjectId
 from dotenv import load_dotenv
 from flask import Flask, abort, flash, redirect, render_template, request, session, url_for
 from pymongo import MongoClient
-from pymongo.errors import DuplicateKeyError
+from pymongo.errors import DuplicateKeyError, PyMongoError
 
 from modelos import CATEGORIAS, Categoria, RepositorioTareas, Tarea
 from usuarios import RepositorioUsuarios, Usuario
@@ -30,6 +30,17 @@ repo_usuarios = RepositorioUsuarios(cliente_usuarios[BASE_USUARIOS])
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY") or os.urandom(32)
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
+
+
+@app.errorhandler(PyMongoError)
+def manejar_error_mongodb(error):
+    app.logger.exception("Error interno al procesar una operación de MongoDB.")
+    return (
+        "Ocurrió un error interno al procesar su solicitud. "
+        "Intente nuevamente más tarde.",
+        500,
+    )
+
 
 ESTADOS = {"pendientes": False, "terminadas": True}
 ORDENES = {"recientes", "antiguas", "titulo"}
@@ -341,4 +352,4 @@ def eliminar_tarea(id_tarea):
     )
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=os.getenv("FLASK_DEBUG", "").casefold() in {"1", "true"})
