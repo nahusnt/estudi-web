@@ -41,6 +41,10 @@ Si una preferencia no existe o no es válida, se aplica el valor inicial definid
 - En login y registro, el control de contraseña alterna entre texto visible y oculto.
 - Se respetan los estados de foco y `prefers-reduced-motion` en CSS.
 
+## Contenido de usuario y seguridad
+
+El servidor renderiza el contenido dinámico mediante plantillas HTML de Jinja con autoescape habilitado. El texto introducido por las personas usuarias se conserva sin escape en MongoDB y se escapa al renderizarlo; no se debe marcar ese contenido como `safe` ni incorporarlo al DOM mediante APIs que interpreten cadenas como HTML. La documentación de hashing, errores de base de datos y recomendaciones de despliegue está en `SECURITY.md`.
+
 ## Clases y atributos visuales
 
 | Selector | Función |

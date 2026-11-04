@@ -10,19 +10,21 @@ Este documento resume las partes principales de Estudi Web para orientar el trab
 - Resumen con totales, progreso, categorías y fechas vencidas o próximas.
 - Perfil editable con nombre de usuario, nombre visible, descripción, etiquetas y foto.
 - Preferencias de interfaz guardadas en el navegador: disposición, tema, paleta, idioma, tamaño del texto, densidad, contraste y animaciones.
-- Pruebas automatizadas con repositorios simulados; no necesitan conectarse a MongoDB.
+- Los modelos validan los datos recibidos; Jinja escapa el contenido de usuario al renderizarlo y las contraseñas se almacenan con hashes de Werkzeug.
+- Los errores de MongoDB se registran internamente y se responden con un mensaje genérico; debug permanece desactivado por defecto.
+- Pruebas automatizadas con repositorios simulados; cubren validación, XSS y manejo de errores sin conectarse a MongoDB.
 
 ## Archivos de referencia
 
 | Archivo | Responsabilidad |
 |---|---|
-| `app.py` | Aplicación Flask, rutas, sesiones, validaciones de formularios y configuración de conexiones. |
+| `app.py` | Aplicación Flask, rutas, sesiones, errores genéricos de MongoDB y configuración de conexiones. |
 | `modelos.py` | Modelo y repositorio de tareas. |
 | `usuarios.py` | Modelo y repositorio de cuentas. |
 | `templates/` | Vistas de la aplicación, login y registro. |
 | `static/css/styles.css` | Diseño visual, temas y responsive. |
 | `static/js/app.js` | Preferencias locales y comportamiento del frontend. |
-| `tests/test_app.py` | Pruebas de rutas, modelos y repositorios. |
+| `tests/test_app.py` | Pruebas de rutas, modelos, repositorios y controles de seguridad. |
 | `docs/` | Arquitectura, modelo de datos y diario. |
 
 ## Datos y configuración
@@ -41,4 +43,4 @@ Instala las dependencias con `python -m pip install -r requirements.txt`, config
 python -m unittest discover -s tests -v
 ```
 
-Consulta `README.md` para los pasos completos. Antes de desplegar, revisa `SECURITY.md`; en particular, la protección CSRF, la clave de sesión y el modo de depuración.
+Consulta `README.md` para los pasos completos. Antes de desplegar, revisa `SECURITY.md`; en particular, la protección CSRF, la clave de sesión, las cookies y el modo de depuración.

@@ -169,3 +169,10 @@ Durante el proyecto utilizamos la IA Sonnet de Claude como apoyo para consultar 
 ## Actualización del repositorio — 31 de octubre
 
 Se sincronizaron las guías técnicas con el estado actual de la aplicación autenticada y de sus datos. También se actualizaron las ilustraciones de demostración para mostrar la barra lateral extendida con una sola tarjeta de perfil en la parte inferior. Las ilustraciones usan datos de ejemplo y no representan una cuenta real.
+
+## Actualización de documentación — 4 de noviembre
+
+- Se actualizaron la guía principal, el resumen del proyecto, la guía de usuario y la documentación de arquitectura y frontend para reflejar las medidas de seguridad implementadas.
+- Se documentaron la validación del lado del servidor, el autoescape de Jinja al mostrar contenido, el almacenamiento de contraseñas mediante hashes y las respuestas genéricas ante errores de MongoDB.
+- Se incorporó el manual de usuario en PDF en [`GUIA_DE_USUARIO.pdf`](./GUIA_DE_USUARIO.pdf) y se enlazó desde la documentación del proyecto.
+- Se mantuvo la protección CSRF como una medida pendiente, indicada en la documentación de seguridad; no se presenta como implementada.

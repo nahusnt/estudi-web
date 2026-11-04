@@ -4,8 +4,8 @@ Estudi Web es una aplicación web Flask con plantillas Jinja, CSS y JavaScript e
 
 ## Componentes
 
-- **`app.py`** configura Flask, carga `.env`, crea las conexiones MongoDB y los repositorios, protege las rutas con una comprobación de sesión y define los flujos de registro, inicio/cierre de sesión, perfil y tareas. También calcula las métricas y fechas que se muestran en el resumen.
-- **`modelos.py`** define `Categoria`, `Tarea` y `RepositorioTareas`. Valida las tareas y concentra las consultas y modificaciones de la colección `tareas`, incluyendo filtros por propietario.
+- **`app.py`** configura Flask, carga `.env`, crea las conexiones MongoDB y los repositorios, protege las rutas con una comprobación de sesión y define los flujos de registro, inicio/cierre de sesión, perfil y tareas. También calcula las métricas y fechas que se muestran en el resumen y responde a errores de MongoDB con un mensaje genérico mientras registra el detalle en el servidor. El modo debug está desactivado por defecto.
+- **`modelos.py`** define `Categoria`, `Tarea` y `RepositorioTareas`. Valida los campos de tareas antes de persistirlos y concentra las consultas y modificaciones de la colección `tareas`, incluyendo filtros por propietario.
 - **`usuarios.py`** define `Usuario` y `RepositorioUsuarios`. Valida las cuentas y perfiles, verifica hashes de contraseña y administra la colección `usuarios` con índices únicos de correo y nombre de usuario normalizado.
 - **`templates/`** contiene las vistas Jinja: `login.html`, `registro.html` e `index.html`. La vista principal presenta las secciones de tareas, resumen, ajustes y perfil; la tarjeta de cuenta aparece una sola vez al final de la barra lateral.
 - **`static/css/styles.css`** define temas, paletas, componentes, las disposiciones compacta y extendida, y los ajustes responsive.
@@ -23,9 +23,11 @@ Estudi Web es una aplicación web Flask con plantillas Jinja, CSS y JavaScript e
 ## Flujo de una petición
 
 1. El navegador solicita una ruta Flask. `/login`, `/registro` y los recursos estáticos son públicos; el resto requiere `usuario_id` en la sesión.
-2. La ruta valida los datos recibidos y consulta el repositorio correspondiente. Las modificaciones de tareas se limitan al propietario de la sesión.
-3. Flask pasa los datos a una plantilla Jinja, que genera HTML con los recursos de `static/`.
+2. La ruta valida los datos recibidos mediante los modelos y consulta el repositorio correspondiente. Las modificaciones de tareas se limitan al propietario de la sesión. Los errores de PyMongo no se muestran al usuario: se registran en el servidor y se responde con un mensaje genérico.
+3. Flask pasa los datos a una plantilla Jinja, que genera HTML con los recursos de `static/`. El autoescape de Jinja convierte el texto de usuario en contenido seguro para HTML; los valores no se escapan manualmente antes de guardarlos en MongoDB.
 4. JavaScript aplica las preferencias locales guardadas en `localStorage` y habilita interacciones del lado del cliente.
+
+Las contraseñas se convierten en hashes con Werkzeug antes de guardarse; la autenticación verifica el hash y no almacena contraseñas en texto plano. La protección CSRF no está configurada actualmente; las medidas pendientes de despliegue se detallan en `SECURITY.md`.
 
 ## Rutas principales
 

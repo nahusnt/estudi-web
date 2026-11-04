@@ -3,6 +3,8 @@
 > **Tu día, más claro. Tus pendientes, en orden.**
 > Esta guía explica, paso a paso, qué hace cada parte de la web de Estudi y cómo sacarle partido: crear y organizar tareas, leer tu progreso en el Resumen, adaptar la apariencia en Ajustes y personalizar tus datos en el Perfil.
 
+También puedes consultar o descargar el [manual de usuario en PDF](./docs/GUIA_DE_USUARIO.pdf).
+
 ---
 
 ## 📑 Contenido
@@ -54,6 +56,7 @@ El taller de la aplicación reúne el formulario **Agregar una tarea** y **Tu li
 * **Campos:** Título (obligatorio), Descripción, Categoría, Fecha límite y Etiquetas (hasta 5).
 * **Filtrado y Orden:** Permite ordenar por más recientes, más antiguas o por título alfabético.
 * **Acciones:** Marca casillas para completar al instante o elimina con confirmación previa.
+* **Seguridad:** El servidor valida los datos y el texto que contiene etiquetas HTML se muestra como texto, sin ejecutarse como código.
 
 ---
 
@@ -85,3 +88,4 @@ Permite personalizar tu identidad visible en la app:
 * **¿Dónde se guardan mis tareas?** En la nube, asociadas a tu cuenta.
 * **¿Mis tareas son privadas?** Sí, cada cuenta accede únicamente a su propia información.
 * **¿Funciona en el móvil?** Sí, la interfaz se adapta por completo a pantallas estrechas.
+* **¿Qué pasa si escribo etiquetas HTML en una tarea?** Se muestran como texto y no se ejecutan en el navegador.

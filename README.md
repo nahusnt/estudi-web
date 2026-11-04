@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB Atlas">
   </p>
 
-   <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#android">📱 Android</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-cuenta-y-perfil">👤 Cuenta y perfil</a> · <a href="#-estructura-del-proyecto">📁 Estructura</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
+   <p><a href="#-un-vistazo">👀 Ver la app</a> · <a href="#android">📱 Android</a> · <a href="#-lo-que-puedes-hacer">✨ Funciones</a> · <a href="#-cuenta-y-perfil">👤 Cuenta y perfil</a> · <a href="#-seguridad">🔐 Seguridad</a> · <a href="#-estructura-del-proyecto">📁 Estructura</a> · <a href="#-empezar">🚀 Instalación</a> · <a href="#-contribuir">🤝 Contribuir</a></p>
 </div>
 
 ---
@@ -54,8 +54,13 @@
 - 🔐 Crear una cuenta con correo y nombre de usuario único; iniciar sesión con cualquiera de los dos identificadores.
 - 👤 Personalizar el perfil con foto, nombre visible, descripción y etiquetas.
 - 👁️ Mostrar u ocultar la contraseña desde el formulario de inicio de sesión.
+- 🛡️ Validar los campos en el servidor, almacenar contraseñas como hashes y escapar el texto del usuario al mostrarlo en las vistas HTML.
 - 🖼️ Ver la foto de perfil junto al nombre de la cuenta en la barra lateral; si no hay foto, se muestra una inicial.
 - ☁️ Guardar tus tareas en la base `lista_tareas_db` de MongoDB, en el clúster indicado por `MONGO_URI`.
+
+## 📘 Manual de usuario
+
+Consulta la [guía de usuario en PDF](./docs/GUIA_DE_USUARIO.pdf) o la [versión en Markdown](./GUIA.md).
 
 ## 👤 Cuenta y perfil
 
@@ -72,6 +77,12 @@ Desde **Perfil** puedes editar estos datos:
 
 La foto y el nombre también se muestran en la barra lateral junto al botón para cerrar sesión.
 
+## 🔐 Seguridad
+
+Los modelos del servidor validan los datos antes de guardarlos en MongoDB. Las plantillas HTML usan el autoescape de Jinja para que el contenido introducido por las personas usuarias se muestre como texto y no como código ejecutable; se conserva el texto original en la base de datos para evitar doble escape. Las contraseñas se guardan mediante hashes de Werkzeug, nunca en texto plano.
+
+Los errores de MongoDB se registran en el servidor y las rutas devuelven un mensaje genérico, sin mostrar detalles internos. El modo debug está desactivado por defecto; no lo habilites en producción. La protección CSRF y otras recomendaciones de despliegue están documentadas en [SECURITY.md](./SECURITY.md).
+
 ## 🧪 Pruebas
 
 Ejecuta las pruebas automatizadas desde la raíz del proyecto:
@@ -80,7 +91,7 @@ Ejecuta las pruebas automatizadas desde la raíz del proyecto:
 python -m unittest discover -s tests -v
 ```
 
-Las 45 pruebas automatizadas validan las rutas principales, la autenticación, el perfil y las reglas de los modelos sin necesitar una conexión a MongoDB.
+Las 47 pruebas automatizadas actuales validan las rutas principales, la autenticación, el perfil, el escape del contenido HTML, el manejo de errores de MongoDB y las reglas de los modelos, sin necesitar una conexión a MongoDB.
 
 
 ## 🧰 Tecnologías
@@ -105,6 +116,7 @@ estudi-web/
 ├── REDES.md
 ├── SECURITY.md
 ├── docs/
+│   └── GUIA_DE_USUARIO.pdf
 ├── images/
 ├── static/
 │   ├── css/
@@ -118,12 +130,12 @@ estudi-web/
 
 | Archivo | Para qué sirve |
 |---|---|
-| `app.py` | Punto de entrada del sitio. Configura Flask y MongoDB, define las rutas, controla las sesiones y conecta los formularios con los modelos y las vistas. |
+| `app.py` | Punto de entrada del sitio. Configura Flask y MongoDB, define las rutas, controla las sesiones, maneja errores de base de datos y conecta los formularios con los modelos y las vistas. |
 | `modelos.py` | Define las categorías y tareas, sus validaciones y `RepositorioTareas`, que lee y escribe tareas en MongoDB. |
 | `usuarios.py` | Define el modelo `Usuario` y `RepositorioUsuarios`, que registran y autentican cuentas y guardan sus datos de perfil. |
 | `requirements.txt` | Lista las dependencias de Python que se instalan con `pip`. |
 | `README.md` | Documentación principal: funciones, instalación, configuración, pruebas y estructura del proyecto. |
-| `CAMBIOS.md` | Resumen de cambios y notas de trabajo sobre las cuentas y perfiles. |
+| `CAMBIOS.md` | Resumen del estado, los componentes y los controles actuales del proyecto. |
 | `REDES.md` | Documenta el diagrama y la propuesta de topología de red del proyecto. |
 | `SECURITY.md` | Describe amenazas de seguridad identificadas y recomendaciones de mitigación. |
 | `.gitignore` | Indica qué archivos locales o generados Git debe ignorar, como `.env`, los entornos virtuales y `__pycache__`. |
@@ -132,11 +144,11 @@ estudi-web/
 
 | Carpeta | Contenido |
 |---|---|
-| `docs/` | Documentación de arquitectura (`ARQUITECTURA.md`), modelo de datos (`MODELO_DATOS.md`) y diario de trabajo (`DIARIO.md`). |
+| `docs/` | Documentación de arquitectura (`ARQUITECTURA.md`), modelo de datos (`MODELO_DATOS.md`), diario (`DIARIO.md`) y manual de usuario en PDF. |
 | `images/` | Recursos para documentación y presentación: capturas de la interfaz en temas claro y oscuro, y el diagrama de red usado en `REDES.md`. |
 | `static/css/` | Hojas de estilo del navegador. `styles.css` contiene los temas, componentes y reglas responsive. |
 | `static/images/` | Imágenes que usa la interfaz, como el logotipo (`logo.png` y `logo-waves.svg`). |
-| `static/js/` | JavaScript del navegador (`app.js`) y su documentación (`DOCUMENTACION_FRONTEND.md`); gestiona preferencias e interacciones de la interfaz. |
+| `static/js/` | JavaScript del navegador (`app.js`) y su documentación (`DOCUMENTACION_FRONTEND.md`); gestiona preferencias e interacciones de la interfaz y documenta el manejo seguro de contenido dinámico. |
 | `templates/` | Vistas HTML renderizadas por Flask/Jinja: `index.html` para la aplicación, `login.html` para iniciar sesión y `registro.html` para crear una cuenta. |
 | `tests/` | Pruebas automatizadas de las rutas, autenticación, modelos y repositorios. `test_app.py` las reúne. |
 
@@ -146,7 +158,7 @@ Las imágenes `images/vista-clara.svg` y `images/vista-oscura.svg` son ilustraci
 
 ## 🧩 Organización del backend
 
-- `Tarea` mantiene privados sus datos y valida el título y las etiquetas al crear cada tarea.
+- `Tarea` mantiene privados sus datos y valida título, categoría, etiquetas, descripción y fecha límite antes de guardar cada tarea.
 - `Categoria` centraliza las categorías permitidas.
 - `RepositorioTareas` encapsula las operaciones de lectura y escritura en MongoDB.
 - `Usuario` valida el correo, el nombre de usuario y los datos del perfil; las contraseñas se almacenan únicamente como hash.
@@ -162,6 +174,7 @@ Guarda la configuración privada en `.env` en la raíz del proyecto. `.gitignore
 | `USUARIOS_URI` | No | URI de un clúster distinto para las cuentas. Si se omite, usa `MONGO_URI`. |
 | `USUARIOS_DB` | No | Base de datos de cuentas; por defecto `estudi_usuarios_db`. |
 | `FLASK_SECRET_KEY` | Recomendable | Clave persistente y privada para firmar las sesiones Flask. Si se omite, se genera una clave aleatoria al iniciar y las sesiones no sobreviven a un reinicio. |
+| `FLASK_DEBUG` | No | Activa el modo debug solo si vale `1` o `true`. Déjala sin definir en producción. |
 
 ## 🚀 Empezar
 
@@ -217,7 +230,7 @@ Guarda la configuración privada en `.env` en la raíz del proyecto. `.gitignore
 
    Abre `.env` y agrega `MONGO_URI` con la URI de tu clúster de Atlas.
 
-   Si quieres separar las cuentas en otro clúster, también puedes definir `USUARIOS_URI`. Para producción, define además una `FLASK_SECRET_KEY` persistente y secreta.
+   Si quieres separar las cuentas en otro clúster, también puedes definir `USUARIOS_URI`. Para producción, define además una `FLASK_SECRET_KEY` persistente y secreta; no habilites `FLASK_DEBUG`.
 
 5. Inicia la aplicación:
 
