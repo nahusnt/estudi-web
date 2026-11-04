@@ -30,58 +30,58 @@ Estudi Web es una aplicación web ligera para organizar tareas personales con ca
 ---
 
 ## 02. Acceso y cuenta
-La primera vez que abres la web debes iniciar sesión o crear una cuenta nueva[cite: 10].
+La primera vez que abres la web debes iniciar sesión o crear una cuenta nueva.
 ![Pantalla de inicio de sesión y creación de cuenta](./images/inicio.jpeg)
-* **Crear cuenta:** Elige un nombre de usuario único (3 a 24 caracteres), un correo válido y una contraseña segura de al menos 8 caracteres[cite: 10].
-* **Iniciar sesión:** Puedes entrar usando tu correo o tu nombre de usuario junto con tu contraseña[cite: 11].
-* **Cerrar sesión:** Ubicado en la tarjeta inferior de la barra lateral, borra la sesión de este navegador sin tocar tus datos en la nube[cite: 11, 12].
+* **Crear cuenta:** Elige un nombre de usuario único (3 a 24 caracteres), un correo válido y una contraseña segura de al menos 8 caracteres.
+* **Iniciar sesión:** Puedes entrar usando tu correo o tu nombre de usuario junto con tu contraseña.
+* **Cerrar sesión:** Ubicado en la tarjeta inferior de la barra lateral, borra la sesión de este navegador sin tocar tus datos en la nube.
 
 ---
 
 ## 03. La interfaz, de un vistazo
 Todo ocurre dentro de una única página con una barra lateral fija a la izquierda:
 ![Sección panel](./images/panel.jpeg)
-* **Marca:** Logo y enlace directo al Resumen[cite: 13].
-* **Menú principal:** Resumen, Tareas, Ajustes y Perfil[cite: 13].
-* **Tarjeta de cuenta:** Muestra tu avatar, nombre visible y usuario[cite: 13].
-* **Botón Modo claro:** Permite alternar el tema visual desde cualquier sección[cite: 13].
+* **Marca:** Logo y enlace directo al Resumen.
+* **Menú principal:** Resumen, Tareas, Ajustes y Perfil.
+* **Tarjeta de cuenta:** Muestra tu avatar, nombre visible y usuario.
+* **Botón Modo claro:** Permite alternar el tema visual desde cualquier sección.
 
 ---
 
 ## 04. Tareas: crea y organiza
-El taller de la aplicación reúne el formulario **Agregar una tarea** y **Tu lista** con filtros avanzados[cite: 14].
+El taller de la aplicación reúne el formulario **Agregar una tarea** y **Tu lista** con filtros avanzados.
 ![Panel de tareas](./images/tareas.jpeg)
-* **Campos:** Título (obligatorio), Descripción, Categoría, Fecha límite y Etiquetas (hasta 5)[cite: 15].
-* **Filtrado y Orden:** Permite ordenar por más recientes, más antiguas o por título alfabético[cite: 16].
-* **Acciones:** Marca casillas para completar al instante o elimina con confirmación previa[cite: 16].
+* **Campos:** Título (obligatorio), Descripción, Categoría, Fecha límite y Etiquetas (hasta 5).
+* **Filtrado y Orden:** Permite ordenar por más recientes, más antiguas o por título alfabético.
+* **Acciones:** Marca casillas para completar al instante o elimina con confirmación previa.
 
 ---
 
 ## 05. Resumen: tu progreso
 El panel de control calcula en tiempo real métricas clave:
 ![Panel de Resumen](./images/resumen.jpeg)
-* **Tarjetas:** Total de tareas, Por hacer, Completadas, Próximas 7 días y Vencidas[cite: 18].
-* **Gráficos:** Dona de estado y barras de distribución por categoría (*Trabajo, Personal, Estudio, Otro*)[cite: 18].
+* **Tarjetas:** Total de tareas, Por hacer, Completadas, Próximas 7 días y Vencidas.
+* **Gráficos:** Dona de estado y barras de distribución por categoría (*Trabajo, Personal, Estudio, Otro*).
 
 ---
 
 ## 06. Ajustes: la web a tu manera
 ![Panel de ajustes](./images/ajustes.jpeg)
 Reúne 8 preferencias guardadas en el navegador actual:
-* **Diseño de interfaz:** Barra lateral o navegación superior[cite: 19].
-* **Apariencia y Colores:** Tema Oscuro/Claro/AMOLED y paletas cromáticas (*Holográfica, Océano, Atardecer, etc.*)[cite: 19].
-* **Idioma:** Español, English, Português, 中文, 日本語, 한국어[cite: 19].
+* **Diseño de interfaz:** Barra lateral o navegación superior.
+* **Apariencia y Colores:** Tema Oscuro/Claro/AMOLED y paletas cromáticas (*Holográfica, Océano, Atardecer, etc.*).
+* **Idioma:** Español, English, Português, 中文, 日本語, 한국어.
 
 ---
 
 ## 07. Perfil: tus datos
 ![Panel de perfil](./images/perfil.jpeg)
 Permite personalizar tu identidad visible en la app:
-* **Campos editables:** Nombre de usuario único, Nombre visible, Descripción (hasta 280 caracteres), Etiquetas personalizadas y Foto de perfil (PNG/JPG/WebP, máx. 1 MB)[cite: 20].
+* **Campos editables:** Nombre de usuario único, Nombre visible, Descripción (hasta 280 caracteres), Etiquetas personalizadas y Foto de perfil (PNG/JPG/WebP, máx. 1 MB).
 
 ---
 
 ## 08. Preguntas frecuentes
-* **¿Dónde se guardan mis tareas?** En la nube, asociadas a tu cuenta[cite: 22].
-* **¿Mis tareas son privadas?** Sí, cada cuenta accede únicamente a su propia información[cite: 22].
-* **¿Funciona en el móvil?** Sí, la interfaz se adapta por completo a pantallas estrechas[cite: 23].
+* **¿Dónde se guardan mis tareas?** En la nube, asociadas a tu cuenta.
+* **¿Mis tareas son privadas?** Sí, cada cuenta accede únicamente a su propia información.
+* **¿Funciona en el móvil?** Sí, la interfaz se adapta por completo a pantallas estrechas.
