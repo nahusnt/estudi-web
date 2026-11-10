@@ -1,3 +1,5 @@
+"""Configura la aplicación Flask y conecta sus rutas con los modelos y repositorios."""
+
 import base64
 import os
 from datetime import date, timedelta
@@ -34,6 +36,7 @@ app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 @app.errorhandler(PyMongoError)
 def manejar_error_mongodb(error):
+    """Registra el detalle interno y devuelve un error genérico al navegador."""
     app.logger.exception("Error interno al procesar una operación de MongoDB.")
     return (
         "Ocurrió un error interno al procesar su solicitud. "
@@ -53,6 +56,7 @@ RUTAS_PUBLICAS = {"login", "registro", "static"}
 
 @app.before_request
 def exigir_sesion_iniciada():
+    """Permite las rutas públicas y redirige al acceso si falta la sesión."""
     # Cualquier otra ruta exige una sesion activa; si no, redirige al login.
     if request.endpoint in RUTAS_PUBLICAS or request.endpoint is None:
         return None
@@ -64,6 +68,7 @@ def exigir_sesion_iniciada():
 # Registra una cuenta nueva e inicia la sesion.
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
+    """Valida una cuenta nueva, la guarda y crea su sesión."""
     if request.method == "POST":
         correo = request.form.get("correo", "")
         nombre_usuario = request.form.get("nombre_usuario", "")
@@ -105,6 +110,7 @@ def registro():
 # Inicia la sesion de una cuenta existente.
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Autentica con correo o nombre de usuario y establece la sesión."""
     if request.method == "POST":
         usuario = repo_usuarios.autenticar(
             request.form.get("identificador", request.form.get("correo", "")),
@@ -121,6 +127,7 @@ def login():
 
 
 def convertir_foto_perfil_a_data_url(archivo):
+    """Valida el tamaño y la firma de imagen antes de codificarla como data URL."""
     contenido = archivo.stream.read(MAX_FOTO_PERFIL_BYTES + 1)
     if len(contenido) > MAX_FOTO_PERFIL_BYTES:
         raise ValueError("La foto debe pesar 1 MB o menos.")
@@ -137,6 +144,7 @@ def convertir_foto_perfil_a_data_url(archivo):
 
 @app.route("/perfil", methods=["POST"])
 def actualizar_perfil():
+    """Valida y persiste los campos del perfil de la cuenta activa."""
     id_usuario = session["usuario_id"]
     usuario = repo_usuarios.buscar_por_id(id_usuario)
     if not usuario:
@@ -178,11 +186,13 @@ def actualizar_perfil():
 # Cierra la sesion actual.
 @app.route("/logout", methods=["POST"])
 def logout():
+    """Elimina todos los datos de sesión y vuelve al formulario de acceso."""
     session.clear()
     return redirect(url_for("login"))
 
 
 def obtener_filtros(origen):
+    """Normaliza los filtros recibidos y descarta valores fuera de las opciones válidas."""
     estado = origen.get("estado", "")
     categoria = origen.get("categoria", "")
     etiqueta = origen.get("etiqueta", "").strip().lstrip("#").casefold()
@@ -196,11 +206,13 @@ def obtener_filtros(origen):
 
 
 def obtener_seccion(origen):
+    """Devuelve una sección permitida o la sección inicial de tareas."""
     seccion = origen.get("seccion", "crear")
     return seccion if seccion in SECCIONES else "crear"
 
 
 def validar_id_tarea(id_tarea):
+    """Responde 404 antes de consultar MongoDB si el identificador no es válido."""
     if not ObjectId.is_valid(id_tarea):
         abort(404)
 
@@ -208,6 +220,7 @@ def validar_id_tarea(id_tarea):
 # Muestra las tareas almacenadas.
 @app.route('/')
 def index():
+    """Renderiza la sección solicitada y calcula los datos del resumen cuando hacen falta."""
     filtros = obtener_filtros(request.args)
     seccion = obtener_seccion(request.args)
     tareas = []
@@ -232,6 +245,7 @@ def index():
     elif seccion == "resumen":
         todas_las_tareas = repo.cargar_todas(usuario_id=usuario_id)
 
+    # Las métricas se calculan sobre las tareas del usuario obtenidas para el resumen.
     tareas_pendientes = sum(not tarea.completada for tarea in todas_las_tareas)
     tareas_terminadas = len(todas_las_tareas) - tareas_pendientes
     fecha_hoy = date.today()
@@ -296,6 +310,7 @@ def index():
 # Crea una tarea a partir del formulario.
 @app.route('/agregar', methods=['POST'])
 def agregar():
+    """Construye una tarea validada, la guarda para el usuario y conserva filtros al volver."""
     titulo = request.form.get('titulo', '')
     categoria = request.form.get("categoria", "")
     etiquetas_texto = request.form.get("etiquetas", "")
@@ -327,6 +342,7 @@ def agregar():
 # Actualiza el estado de una tarea.
 @app.route('/toggle/<id_tarea>', methods=['POST'])
 def toggle_tarea(id_tarea):
+    """Cambia el estado de una tarea propia después de validar su identificador."""
     validar_id_tarea(id_tarea)
     repo.cambiar_estado(id_tarea, session["usuario_id"])
     return redirect(
@@ -341,6 +357,7 @@ def toggle_tarea(id_tarea):
 # Elimina una tarea existente.
 @app.route('/eliminar/<id_tarea>', methods=['POST'])
 def eliminar_tarea(id_tarea):
+    """Borra una tarea propia y vuelve a la lista con los filtros recibidos."""
     validar_id_tarea(id_tarea)
     repo.eliminar(id_tarea, session["usuario_id"])
     return redirect(
@@ -351,5 +368,6 @@ def eliminar_tarea(id_tarea):
         )
     )
 
+# Permite iniciar el servidor integrado solo al ejecutar este archivo directamente.
 if __name__ == '__main__':
     app.run(debug=os.getenv("FLASK_DEBUG", "").casefold() in {"1", "true"})

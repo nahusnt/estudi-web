@@ -12,7 +12,7 @@ También puedes consultar o descargar el [manual de usuario en PDF](./docs/GUIA_
 2. [Acceso y cuenta](#2-acceso-y-cuenta)
 3. [La interfaz, de un vistazo](#3-la-interfaz-de-un-vistazo)
 4. [Tareas: crea y organiza](#4-tareas-crea-y-organiza)
-5. [Resumen: tu progreso](#5-resumen-tu-progress)
+5. [Resumen: tu progreso](#5-resumen-tu-progreso)
 6. [Ajustes: la web a tu manera](#6-ajustes-la-web-a-tu-manera)
 7. [Perfil: tus datos](#7-perfil-tus-datos)
 8. [Preguntas frecuentes](#8-preguntas-frecuentes)
@@ -36,7 +36,7 @@ La primera vez que abres la web debes iniciar sesión o crear una cuenta nueva.
 ![Pantalla de inicio de sesión y creación de cuenta](./images/inicio.jpeg)
 * **Crear cuenta:** Elige un nombre de usuario único (3 a 24 caracteres), un correo válido y una contraseña segura de al menos 8 caracteres.
 * **Iniciar sesión:** Puedes entrar usando tu correo o tu nombre de usuario junto con tu contraseña.
-* **Cerrar sesión:** Ubicado en la tarjeta inferior de la barra lateral, borra la sesión de este navegador sin tocar tus datos en la nube.
+* **Cerrar sesión:** El botón de la tarjeta inferior de la barra lateral cierra la sesión; no elimina tus datos guardados en la nube.
 
 ---
 
@@ -70,22 +70,23 @@ El panel de control calcula en tiempo real métricas clave:
 
 ## 06. Ajustes: la web a tu manera
 ![Panel de ajustes](./images/ajustes.jpeg)
-Reúne 8 preferencias guardadas en el navegador actual:
-* **Diseño de interfaz:** Barra lateral o navegación superior.
-* **Apariencia y Colores:** Tema Oscuro/Claro/AMOLED y paletas cromáticas (*Holográfica, Océano, Atardecer, etc.*).
-* **Idioma:** Español, English, Português, 中文, 日本語, 한국어.
+Las ocho preferencias se guardan en el navegador actual y no cambian los datos de tu cuenta:
+* **Diseño de interfaz:** Barra lateral extendida o navegación compacta superior.
+* **Apariencia:** Tema oscuro, claro o AMOLED y una de diez paletas de color.
+* **Idioma:** Español, English, Português, 中文, 日本語 o 한국어.
+* **Lectura y movimiento:** Tamaño del texto, densidad de la lista, contraste y animaciones.
 
 ---
 
 ## 07. Perfil: tus datos
 ![Panel de perfil](./images/perfil.jpeg)
 Permite personalizar tu identidad visible en la app:
-* **Campos editables:** Nombre de usuario único, Nombre visible, Descripción (hasta 280 caracteres), Etiquetas personalizadas y Foto de perfil (PNG/JPG/WebP, máx. 1 MB).
+* **Campos editables:** Nombre de usuario único (3–24 caracteres), nombre visible (hasta 60 caracteres), descripción (hasta 280 caracteres), hasta ocho etiquetas y foto de perfil PNG/JPG/WebP (máx. 1 MB).
 
 ---
 
 ## 08. Preguntas frecuentes
 * **¿Dónde se guardan mis tareas?** En la nube, asociadas a tu cuenta.
-* **¿Mis tareas son privadas?** Sí, cada cuenta accede únicamente a su propia información.
+* **¿Mis tareas son privadas?** Las rutas de la aplicación filtran las tareas por la cuenta iniciada. Protege tu contraseña y cierra sesión en dispositivos compartidos.
 * **¿Funciona en el móvil?** Sí, la interfaz se adapta por completo a pantallas estrechas.
 * **¿Qué pasa si escribo etiquetas HTML en una tarea?** Se muestran como texto y no se ejecutan en el navegador.

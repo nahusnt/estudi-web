@@ -12,6 +12,7 @@ Este documento describe los controles que existen en el código y los puntos que
 - Los índices únicos de MongoDB protegen la unicidad del correo y del nombre de usuario normalizado.
 - La foto de perfil se limita a 1 MB y se aceptan firmas binarias de PNG, JPEG o WebP; la aplicación limita las solicitudes a 2 MB.
 - `.env` está excluido por `.gitignore`; no se deben incluir credenciales ni claves en el repositorio.
+- `.env.example` contiene solo nombres de variables y valores ilustrativos; reemplaza esos marcadores en tu `.env` local y no copies credenciales reales al repositorio.
 
 ## Riesgos y medidas recomendadas
 
@@ -48,6 +49,10 @@ Los documentos creados antes de incorporar cuentas pueden carecer de `usuario_id
 `MONGO_URI` y, opcionalmente, `USUARIOS_URI` deben mantenerse fuera del código. Una URI de MongoDB permite acceder a los datos según los permisos de la cuenta de base de datos.
 
 **Recomendación:** restringir acceso de red en Atlas, usar credenciales únicas con permisos mínimos, mantener los secretos fuera de Git y rotarlos si se exponen.
+
+### Carga de imágenes de perfil
+
+La aplicación limita el tamaño total de las solicitudes y valida el tamaño y la firma binaria de las imágenes aceptadas. Esta comprobación identifica formatos comunes, pero no sustituye un servicio de análisis de archivos ni una política de retención si se habilitan cargas públicas en el futuro.
 
 ## Uso local
 

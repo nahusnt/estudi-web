@@ -2,6 +2,8 @@
 
 La aplicación usa MongoDB. Las tareas y las cuentas se guardan en colecciones separadas. Los nombres de base de datos se definen en `app.py` y pueden configurarse para cuentas con variables de entorno.
 
+Las preferencias de apariencia no forman parte de estas colecciones: se conservan en `localStorage` del navegador. Consulta [Arquitectura](./ARQUITECTURA.md) para el flujo de acceso y [README.md](../README.md) para configurar la conexión.
+
 ## Tareas
 
 **Base:** `lista_tareas_db`

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
+    <!-- Recursos y metadatos de la página pública de creación de cuenta. -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0b0a1a">
@@ -48,6 +49,7 @@
                 {% endif %}
             {% endwith %}
 
+            <!-- Envía los datos de registro; el servidor vuelve a validar cada campo. -->
             <form action="{{ url_for('registro') }}" method="POST" class="auth-form">
                 <label class="field">
                     <span>Nombre de usuario único</span>

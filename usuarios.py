@@ -1,3 +1,5 @@
+"""Define el modelo de cuenta y las operaciones de autenticación en MongoDB."""
+
 import re
 
 from bson import ObjectId
@@ -11,6 +13,8 @@ ETIQUETA_PERFIL_VALIDA = re.compile(r"[\w-]{1,24}")
 
 # Representa una cuenta de usuario y su formato de almacenamiento.
 class Usuario:
+    """Valida la identidad y el perfil, y conserva la contraseña únicamente como hash."""
+
     def __init__(
         self,
         correo,
@@ -23,6 +27,7 @@ class Usuario:
         foto_perfil=None,
         etiquetas=None,
     ):
+        """Normaliza el correo y construye una cuenta con campos de perfil válidos."""
         correo = correo.strip().lower() if isinstance(correo, str) else ""
         if not CORREO_VALIDO.fullmatch(correo):
             raise ValueError("Ingresa un correo válido, por ejemplo nombre@dominio.com.")
@@ -46,6 +51,7 @@ class Usuario:
 
     @staticmethod
     def _validar_nombre_usuario(nombre_usuario):
+        """Valida el identificador público de 3 a 24 caracteres."""
         if not isinstance(nombre_usuario, str):
             raise ValueError("El nombre de usuario debe tener entre 3 y 24 caracteres: letras, números, guion o guion bajo.")
         nombre_usuario = nombre_usuario.strip()
@@ -55,10 +61,12 @@ class Usuario:
 
     @staticmethod
     def normalizar_nombre_usuario(nombre_usuario):
+        """Normaliza el identificador para búsquedas que ignoran mayúsculas."""
         return nombre_usuario.strip().casefold() if isinstance(nombre_usuario, str) else ""
 
     @staticmethod
     def _validar_nombre(nombre):
+        """Recorta y valida el nombre visible obligatorio."""
         if not isinstance(nombre, str):
             raise ValueError("El nombre visible es obligatorio y debe tener 60 caracteres como máximo.")
         nombre = nombre.strip()
@@ -68,6 +76,7 @@ class Usuario:
 
     @staticmethod
     def _validar_descripcion(descripcion):
+        """Valida el texto de descripción y aplica el máximo de caracteres."""
         if not isinstance(descripcion, str):
             raise ValueError("La descripción debe ser texto.")
         descripcion = descripcion.strip()
@@ -77,6 +86,7 @@ class Usuario:
 
     @staticmethod
     def _validar_etiquetas(etiquetas):
+        """Normaliza y valida hasta ocho etiquetas únicas del perfil."""
         etiquetas_normalizadas = []
         for etiqueta in etiquetas or []:
             if not isinstance(etiqueta, str):
@@ -93,43 +103,54 @@ class Usuario:
 
     @property
     def id(self):
+        """Devuelve el ID de MongoDB como texto o None antes de guardar."""
         return self.__id
 
     @property
     def correo(self):
+        """Devuelve el correo normalizado de la cuenta."""
         return self.__correo
 
     @property
     def nombre_usuario(self):
+        """Devuelve el nombre de usuario o None para cuentas antiguas."""
         return self.__nombre_usuario
 
     @property
     def nombre_usuario_normalizado(self):
+        """Devuelve la versión normalizada usada por búsquedas e índices."""
         return self.normalizar_nombre_usuario(self.__nombre_usuario)
 
     @property
     def nombre(self):
+        """Devuelve el nombre visible del perfil."""
         return self.__nombre
 
     @property
     def descripcion(self):
+        """Devuelve la descripción del perfil."""
         return self.__descripcion
 
     @property
     def foto_perfil(self):
+        """Devuelve la imagen de perfil almacenada como data URL, si existe."""
         return self.__foto_perfil
 
     @property
     def etiquetas(self):
+        """Devuelve una copia de las etiquetas para proteger la lista interna."""
         return self.__etiquetas.copy()
 
     def verificar_contrasena(self, contrasena):
+        """Compara la contraseña proporcionada con el hash guardado."""
         return check_password_hash(self.__hash, contrasena or "")
 
     def asignar_id(self, id_usuario):
+        """Asocia a la cuenta el ID que MongoDB generó al insertarla."""
         self.__id = id_usuario
 
     def actualizar_perfil(self, nombre_usuario, nombre, descripcion, etiquetas, foto_perfil):
+        """Valida y reemplaza los campos editables del perfil."""
         self.__nombre_usuario = self._validar_nombre_usuario(nombre_usuario)
         self.__nombre = self._validar_nombre(nombre)
         self.__descripcion = self._validar_descripcion(descripcion)
@@ -137,7 +158,7 @@ class Usuario:
         self.__foto_perfil = foto_perfil
 
     def a_diccionario(self):
-        """Convierte el objeto a un diccionario compatible con MongoDB."""
+        """Serializa la cuenta sin incluir nunca la contraseña en texto plano."""
         datos = {
             "correo": self.__correo,
             "contrasena_hash": self.__hash,
@@ -154,7 +175,10 @@ class Usuario:
 
 # Centraliza las operaciones de cuentas de usuario en MongoDB.
 class RepositorioUsuarios:
+    """Agrupa consultas de cuentas, autenticación e índices de unicidad."""
+
     def __init__(self, db):
+        """Selecciona la colección y establece índices únicos para correo y usuario."""
         self.__coleccion = db["usuarios"]
         # El correo es unico: la base rechaza dos cuentas con el mismo correo.
         self.__coleccion.create_index("correo", unique=True)
@@ -165,17 +189,20 @@ class RepositorioUsuarios:
         )
 
     def guardar(self, usuario):
+        """Inserta la cuenta y asigna al objeto el ID generado por MongoDB."""
         resultado = self.__coleccion.insert_one(usuario.a_diccionario())
         usuario.asignar_id(str(resultado.inserted_id))
         return usuario
 
     def buscar_por_correo(self, correo):
+        """Busca una cuenta por correo sin distinguir mayúsculas."""
         documento = self.__coleccion.find_one(
             {"correo": (correo or "").strip().lower()}
         )
         return self._usuario_desde_documento(documento)
 
     def buscar_por_nombre_usuario(self, nombre_usuario):
+        """Busca por el identificador normalizado; devuelve None si está vacío."""
         normalizado = Usuario.normalizar_nombre_usuario(nombre_usuario)
         if not normalizado:
             return None
@@ -183,6 +210,7 @@ class RepositorioUsuarios:
         return self._usuario_desde_documento(documento)
 
     def buscar_por_identificador(self, identificador):
+        """Interpreta el valor como correo o nombre de usuario y busca la cuenta."""
         identificador = (identificador or "").strip()
         if "@" in identificador:
             return self.buscar_por_correo(identificador)
@@ -191,12 +219,14 @@ class RepositorioUsuarios:
         return self.buscar_por_nombre_usuario(identificador)
 
     def buscar_por_id(self, id_usuario):
+        """Busca por ObjectId y descarta identificadores con formato inválido."""
         if not ObjectId.is_valid(id_usuario):
             return None
         documento = self.__coleccion.find_one({"_id": ObjectId(id_usuario)})
         return self._usuario_desde_documento(documento)
 
     def obtener_foto_perfil(self, id_usuario):
+        """Lee únicamente la foto de una cuenta válida para reducir datos consultados."""
         if not ObjectId.is_valid(id_usuario):
             return None
         documento = self.__coleccion.find_one(
@@ -206,6 +236,7 @@ class RepositorioUsuarios:
 
     @staticmethod
     def _usuario_desde_documento(documento):
+        """Reconstruye un Usuario o devuelve None si MongoDB no encontró el documento."""
         if not documento:
             return None
         return Usuario(
@@ -220,12 +251,14 @@ class RepositorioUsuarios:
         )
 
     def autenticar(self, identificador, contrasena):
+        """Devuelve la cuenta solo cuando el identificador y el hash coinciden."""
         usuario = self.buscar_por_identificador(identificador)
         if usuario and usuario.verificar_contrasena(contrasena):
             return usuario
         return None
 
     def actualizar_perfil(self, id_usuario, usuario):
+        """Actualiza los campos de perfil de una cuenta identificada por ObjectId."""
         if not ObjectId.is_valid(id_usuario):
             return False
         datos = usuario.a_diccionario()
@@ -246,4 +279,5 @@ class RepositorioUsuarios:
         return resultado.matched_count == 1
 
     def contar(self):
+        """Devuelve el número de cuentas almacenadas."""
         return self.__coleccion.count_documents({})

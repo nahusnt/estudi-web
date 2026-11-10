@@ -176,3 +176,10 @@ Se sincronizaron las guías técnicas con el estado actual de la aplicación aut
 - Se documentaron la validación del lado del servidor, el autoescape de Jinja al mostrar contenido, el almacenamiento de contraseñas mediante hashes y las respuestas genéricas ante errores de MongoDB.
 - Se incorporó el manual de usuario en PDF en [`GUIA_DE_USUARIO.pdf`](./GUIA_DE_USUARIO.pdf) y se enlazó desde la documentación del proyecto.
 - Se mantuvo la protección CSRF como una medida pendiente, indicada en la documentación de seguridad; no se presenta como implementada.
+
+## Revisión de documentación y código — 10 de noviembre
+
+- Se actualizaron los enlaces y datos de las guías para mantener coherentes las preferencias, la navegación y los límites del perfil con la aplicación.
+- Se aclaró que el documento de redes es una propuesta académica y no ubica MongoDB Atlas dentro de la red local dibujada.
+- Se añadieron explicaciones a módulos, funciones y secciones relevantes del backend, las pruebas y la interfaz, usando la sintaxis de comentarios de cada formato.
+- Se saneó `.env.example` con marcadores ilustrativos para configurar la aplicación sin guardar valores de conexión reales en el repositorio.

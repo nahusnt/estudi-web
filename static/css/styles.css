@@ -1,4 +1,5 @@
-/* ===== Tokens: modo oscuro por defecto (Y2K / holográfico) ===== */
+/* ===== Variables compartidas: modo oscuro por defecto (Y2K / holográfico) ===== */
+/* Los componentes usan estas variables para adaptar colores y tipografía por tema. */
 :root {
     color-scheme: dark;
     --page: #0b0a1a;
@@ -41,6 +42,7 @@
     --orb-b: rgb(110 231 255 / 40%);
 }
 
+/* El tema AMOLED reemplaza superficies y elimina las luces decorativas del fondo. */
 [data-theme="amoled"] {
     color-scheme: dark;
     --page: #000000;
@@ -57,6 +59,7 @@
 
 [data-theme="amoled"] .bg-orb { display: none; }
 
+/* Cada paleta modifica los acentos y degradados sin alterar el tema elegido. */
 [data-palette="ocean"] {
     --accent: #56d8e8;
     --accent-hover: #9af4ff;
@@ -522,6 +525,7 @@ h2 { margin-bottom: 18px; font-family: var(--font-display); font-size: 1.05rem; 
 .upcoming-task small { color: var(--muted); }
 .settings-intro { margin: -8px 0 22px; }
 .settings-list { display: grid; }
+/* Ajustes visuales gobernados por los atributos data-* que establece app.js. */
 .setting-row {
     display: flex;
     align-items: center;
@@ -776,6 +780,7 @@ h2 { margin-bottom: 18px; font-family: var(--font-display); font-size: 1.05rem; 
 .profile-remove-photo input { width: 18px; height: 18px; accent-color: var(--accent); }
 
 @media (max-width: 560px) {
+    /* En móviles, el perfil pasa a una columna y reduce el avatar. */
     .profile-heading { align-items: flex-start; gap: 14px; }
     .profile-avatar { width: 78px; height: 78px; flex-basis: 78px; }
     .profile-fields { grid-template-columns: 1fr; }

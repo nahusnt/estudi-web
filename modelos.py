@@ -1,3 +1,5 @@
+"""Define las categorías, el modelo de tareas y su acceso a MongoDB."""
+
 import re
 from datetime import date
 
@@ -5,19 +7,24 @@ from bson import ObjectId
 
 
 class Categoria:
+    """Valida y representa una de las categorías admitidas por la aplicación."""
+
     NOMBRES_VALIDOS = ("Trabajo", "Personal", "Estudio", "Otro")
 
     def __init__(self, nombre):
+        """Rechaza nombres fuera del conjunto de categorías permitidas."""
         if not self.es_valida(nombre):
             raise ValueError("Selecciona una categoría válida.")
         self.__nombre = nombre
 
     @property
     def nombre(self):
+        """Devuelve el nombre validado de la categoría."""
         return self.__nombre
 
     @classmethod
     def es_valida(cls, nombre):
+        """Indica si el nombre pertenece al conjunto de categorías."""
         return nombre in cls.NOMBRES_VALIDOS
 
 
@@ -26,6 +33,8 @@ CATEGORIAS = Categoria.NOMBRES_VALIDOS
 
 # Representa una tarea y su formato de almacenamiento.
 class Tarea:
+    """Guarda los datos de una tarea tras validarlos y normalizarlos."""
+
     def __init__(
         self,
         titulo,
@@ -36,6 +45,7 @@ class Tarea:
         descripcion="",
         fecha_vencimiento=None,
     ):
+        """Valida los campos y establece los valores de la tarea."""
         titulo = titulo.strip() if isinstance(titulo, str) else ""
         if not titulo or len(titulo) > 120:
             raise ValueError(
@@ -54,6 +64,7 @@ class Tarea:
 
     @staticmethod
     def _validar_descripcion(descripcion):
+        """Recorta y limita la descripción opcional."""
         if not isinstance(descripcion, str):
             raise ValueError("La descripción debe ser texto.")
         descripcion = descripcion.strip()
@@ -63,6 +74,7 @@ class Tarea:
 
     @staticmethod
     def _validar_fecha(fecha_vencimiento):
+        """Convierte una fecha ISO o date; permite que no se indique vencimiento."""
         if fecha_vencimiento in (None, ""):
             return None
         if isinstance(fecha_vencimiento, date):
@@ -78,10 +90,12 @@ class Tarea:
 
     @staticmethod
     def etiqueta_valida(etiqueta):
+        """Comprueba que una etiqueta use caracteres y longitud permitidos."""
         return re.fullmatch(r"[\w-]{1,20}", etiqueta) is not None
 
     @classmethod
     def _validar_etiquetas(cls, etiquetas):
+        """Normaliza etiquetas, quita duplicados y aplica el máximo de cinco."""
         etiquetas_normalizadas = []
         for etiqueta in etiquetas or []:
             if not isinstance(etiqueta, str):
@@ -102,37 +116,45 @@ class Tarea:
 
     @property
     def id(self):
+        """Devuelve el identificador asignado por MongoDB, si existe."""
         return self.__id
 
     @property
     def titulo(self):
+        """Devuelve el título validado."""
         return self.__titulo
 
     @property
     def completada(self):
+        """Indica si la tarea está marcada como completada."""
         return self.__completada
 
     @property
     def categoria(self):
+        """Devuelve el nombre de la categoría asociada."""
         return self.__categoria.nombre
 
     @property
     def etiquetas(self):
+        """Devuelve una copia para evitar cambios externos en la lista interna."""
         return self.__etiquetas.copy()
 
     @property
     def descripcion(self):
+        """Devuelve la descripción normalizada."""
         return self.__descripcion
 
     @property
     def fecha_vencimiento(self):
+        """Devuelve la fecha límite o None si no se definió."""
         return self.__fecha_vencimiento
 
     def asignar_id(self, id_tarea):
+        """Asocia al objeto el identificador generado al guardarlo."""
         self.__id = id_tarea
 
     def a_diccionario(self):
-        """Convierte el objeto a un diccionario compatible con MongoDB"""
+        """Serializa la tarea con nombres de campo y fecha compatibles con MongoDB."""
         return {
             "titulo": self.titulo,
             "completada": self.completada,
@@ -149,11 +171,15 @@ class Tarea:
 
 # Centraliza las consultas y modificaciones de tareas en MongoDB.
 class RepositorioTareas:
+    """Encapsula las consultas de tareas y limita las operaciones al propietario."""
+
     def __init__(self, db):
+        """Selecciona la colección y crea el índice usado para ordenar por título."""
         self.__coleccion = db["tareas"]
         self.__coleccion.create_index("titulo")
 
     def guardar(self, tarea, usuario_id=None):
+        """Inserta una tarea, la vincula al usuario y asigna el ID insertado."""
         documento = tarea.a_diccionario()
         if usuario_id:
             documento["usuario_id"] = usuario_id
@@ -162,6 +188,7 @@ class RepositorioTareas:
         return tarea
 
     def cargar_todas(self, estado=None, categoria=None, etiqueta=None, orden="recientes", usuario_id=None):
+        """Filtra y ordena tareas, aplicando valores compatibles a documentos antiguos."""
         # Recupera solo los campos usados por la vista y evita una lista intermedia.
         filtros = {}
         if usuario_id:
@@ -209,9 +236,11 @@ class RepositorioTareas:
         ]
 
     def listar_etiquetas(self):
+        """Devuelve las etiquetas distintas ordenadas sin distinguir mayúsculas."""
         return sorted(self.__coleccion.distinct("etiquetas"), key=str.casefold)
 
     def cambiar_estado(self, id_tarea, usuario_id=None):
+        """Invierte el estado en MongoDB y opcionalmente restringe por propietario."""
         # Invierte el estado de forma atomica en una sola operacion de MongoDB.
         # El usuario_id limita la operacion a tareas propias.
         consulta = {"_id": ObjectId(id_tarea)}
@@ -231,6 +260,7 @@ class RepositorioTareas:
         )
 
     def eliminar(self, id_tarea, usuario_id=None):
+        """Elimina la tarea indicada, restringiendo la consulta al propietario si se recibe."""
         consulta = {"_id": ObjectId(id_tarea)}
         if usuario_id:
             consulta["usuario_id"] = usuario_id

@@ -1,5 +1,7 @@
 # Documentación del frontend — Estudi Web
 
+Esta guía describe el frontend actualmente implementado. Para el flujo del servidor consulta [Arquitectura](../../docs/ARQUITECTURA.md); para el recorrido de uso consulta la [guía de usuario](../../GUIA.md).
+
 ## Estructura
 
 - `templates/index.html` contiene la interfaz autenticada: barra lateral, tareas, resumen, perfil y ajustes.
@@ -30,7 +32,7 @@ JavaScript valida los valores antes de aplicarlos y usa `localStorage` para guar
 | Contraste | `contraste-lista-tareas` | normal o reforzado |
 | Animaciones | `animaciones-lista-tareas` | activadas o desactivadas |
 
-Si una preferencia no existe o no es válida, se aplica el valor inicial definido en `app.js`. Si el navegador bloquea `localStorage`, las funciones afectadas usan sus valores iniciales.
+Si una preferencia no existe o no es válida, se aplica el valor inicial definido en `app.js`. Si el navegador bloquea `localStorage`, las lecturas recurren a esos valores iniciales y las escrituras no impiden usar la interfaz durante esa sesión.
 
 ## Interacciones
 

@@ -1,5 +1,6 @@
 // ---------- Modo oscuro / claro ----------
 // El diseño nace oscuro (estética Y2K). El modo claro se guarda en localStorage.
+// Las claves y los elementos DOM se centralizan para mantener sincronizados los controles.
 const CLAVE_TEMA = "tema-lista-tareas";
 const CLAVE_PALETA = "paleta-lista-tareas";
 const CLAVE_IDIOMA = "idioma-lista-tareas";
@@ -25,6 +26,7 @@ const IDIOMAS_VALIDOS = ["es", "en", "pt", "zh", "ja", "ko"];
 const TAMANOS_VALIDOS = ["normal", "large", "x-large"];
 const DISPOSICIONES_VALIDAS = ["compact", "extended"];
 
+// Lee el tema guardado; si el navegador bloquea el almacenamiento, se usará el tema inicial.
 function leerTemaGuardado() {
     try {
         return localStorage.getItem(CLAVE_TEMA);
@@ -33,6 +35,7 @@ function leerTemaGuardado() {
     }
 }
 
+// Aplica tema visual, color del navegador y textos accesibles del botón de cambio.
 function aplicarTema(tema) {
     if (!TEMAS_VALIDOS.includes(tema)) tema = "dark";
     document.documentElement.dataset.theme = tema;
@@ -53,6 +56,7 @@ function aplicarTema(tema) {
     themeSetting.value = tema;
 }
 
+// Inicializa cada preferencia validando su valor antes de aplicarlo a la página.
 aplicarTema(leerTemaGuardado());
 const disposicionGuardada = leerPreferencia(CLAVE_DISPOSICION);
 const disposicionInicial = DISPOSICIONES_VALIDAS.includes(disposicionGuardada)
@@ -81,6 +85,7 @@ document.documentElement.dataset.motion =
 motionSetting.checked = document.documentElement.dataset.motion !== "off";
 
 themeButton.addEventListener("click", () => {
+    // El botón recorre los tres temas y persiste la selección para la próxima visita.
     const actual = document.documentElement.dataset.theme;
     const nuevo = actual === "dark" ? "light" : actual === "light" ? "amoled" : "dark";
     aplicarTema(nuevo);
@@ -94,6 +99,7 @@ themeSetting.addEventListener("change", () => {
     guardarPreferencia(CLAVE_TEMA, themeSetting.value);
 });
 
+// El selector delega la traducción al mismo flujo usado al cargar la página.
 languageSetting.addEventListener("change", () => {
     aplicarIdioma(languageSetting.value);
 });
@@ -113,6 +119,7 @@ paletteSetting.addEventListener("change", () => {
 });
 
 const TRADUCCIONES = {
+    // Traduce los textos estáticos de la interfaz; los datos personales se conservan.
     en: {
         "Espacio": "Workspace", "Secciones principales": "Main sections", "Resumen": "Overview", "Tareas": "Tasks", "Configuración": "Settings", "Ajustes": "Settings",
         "Un poco más de enfoque.": "A little more focus.", "Una tarea a la vez. Haz espacio para lo importante.": "One task at a time. Make room for what matters.", "Todo listo para avanzar": "Ready to move forward",
@@ -173,6 +180,7 @@ TRADUCCIONES.ko = {
 const textosOriginales = new WeakMap();
 const atributosOriginales = new WeakMap();
 
+// Sustituye textos y atributos accesibles sin interpretar contenido como HTML.
 function aplicarIdioma(idioma) {
     if (!IDIOMAS_VALIDOS.includes(idioma)) idioma = "es";
     document.documentElement.lang = idioma;
@@ -273,6 +281,7 @@ function aplicarIdioma(idioma) {
 
 aplicarIdioma(leerPreferencia(CLAVE_IDIOMA) || "es");
 
+// Cada control actualiza el atributo visual y guarda la preferencia correspondiente.
 textSizeSetting.addEventListener("change", () => {
     const tamano = TAMANOS_VALIDOS.includes(textSizeSetting.value) ? textSizeSetting.value : "normal";
     document.documentElement.dataset.textSize = tamano;
@@ -295,6 +304,7 @@ motionSetting.addEventListener("change", () => {
 });
 
 function leerPreferencia(clave) {
+    // Un bloqueo de localStorage no impide cargar la interfaz con valores iniciales.
     try {
         return localStorage.getItem(clave);
     } catch (e) {
@@ -303,12 +313,14 @@ function leerPreferencia(clave) {
 }
 
 function guardarPreferencia(clave, valor) {
+    // La preferencia solo afecta al navegador actual; no se envía al servidor.
     try {
         localStorage.setItem(clave, valor);
     } catch (e) {}
 }
 
 // ---------- Confirmar eliminación ----------
+// Interrumpe el envío del formulario si la persona cancela la confirmación.
 document.querySelectorAll(".delete-form").forEach((formulario) => {
     formulario.addEventListener("submit", (evento) => {
         if (!window.confirm(formulario.dataset.confirm)) {

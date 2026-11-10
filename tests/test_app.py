@@ -15,7 +15,10 @@ from usuarios import RepositorioUsuarios, Usuario
 # Usa un repositorio simulado, por lo que las pruebas no necesitan conectarse a MongoDB ni modificar datos reales.
 # python -m unittest discover -s tests -v
 class RutasTareasTest(unittest.TestCase):
+    """Prueba las rutas con repositorios simulados y una sesión de prueba."""
+
     def setUp(self):
+        """Aísla cada prueba de MongoDB y prepara un cliente autenticado."""
         self.repo = Mock(spec=RepositorioTareas)
         self.repo.cargar_todas.return_value = []
         self.repo.listar_etiquetas.return_value = []
@@ -289,6 +292,7 @@ class RutasTareasTest(unittest.TestCase):
 
 
 class ModeloUsuarioTest(unittest.TestCase):
+    """Comprueba validaciones, normalización y hash de las cuentas."""
     def test_rechaza_correo_invalido(self):
         with self.assertRaisesRegex(ValueError, "correo válido"):
             Usuario("no-es-un-correo")
@@ -354,6 +358,7 @@ class ModeloUsuarioTest(unittest.TestCase):
 
 
 class AccesoSesionTest(unittest.TestCase):
+    """Verifica el registro, el inicio de sesión y el acceso protegido."""
     def setUp(self):
         self.repo_usuarios = Mock(spec=RepositorioUsuarios)
         self.repo_usuarios_patch = patch.object(app_module, "repo_usuarios", self.repo_usuarios)
@@ -595,6 +600,7 @@ class AccesoSesionTest(unittest.TestCase):
 
 
 class ModeloTareaTest(unittest.TestCase):
+    """Comprueba los límites y la serialización del modelo de tareas."""
     def test_rechaza_categoria_invalida(self):
         with self.assertRaisesRegex(ValueError, "categoría válida"):
             Tarea("Tarea", categoria="Inventada")
@@ -627,6 +633,7 @@ class ModeloTareaTest(unittest.TestCase):
 
 
 class RepositorioTareasTest(unittest.TestCase):
+    """Valida las consultas de tareas con una colección MongoDB simulada."""
     def setUp(self):
         self.coleccion = MagicMock()
         self.db = MagicMock()
@@ -682,6 +689,7 @@ class RepositorioTareasTest(unittest.TestCase):
 
 
 class RepositorioUsuariosTest(unittest.TestCase):
+    """Valida autenticación y compatibilidad del repositorio de cuentas."""
     def setUp(self):
         self.coleccion = MagicMock()
         self.db = MagicMock()

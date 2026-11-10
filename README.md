@@ -58,7 +58,22 @@
 - 🖼️ Ver la foto de perfil junto al nombre de la cuenta en la barra lateral; si no hay foto, se muestra una inicial.
 - ☁️ Guardar tus tareas en la base `lista_tareas_db` de MongoDB, en el clúster indicado por `MONGO_URI`.
 
-## 📘 Manual de usuario
+## 📘 Documentación
+
+La documentación se mantiene en varios archivos, según el público y el tema:
+
+| Documento | Contenido |
+|---|---|
+| [Guía de usuario](./GUIA.md) | Recorrido de las secciones, tareas, ajustes, perfil y preguntas frecuentes. |
+| [Arquitectura](./docs/ARQUITECTURA.md) | Componentes, persistencia, rutas y flujo de las peticiones. |
+| [Modelo de datos](./docs/MODELO_DATOS.md) | Colecciones, campos, validaciones e índices de MongoDB. |
+| [Frontend](./static/js/DOCUMENTACION_FRONTEND.md) | Plantillas, estilos, preferencias e interacciones del navegador. |
+| [Seguridad](./SECURITY.md) | Controles presentes y medidas pendientes para producción. |
+| [Propuesta de red](./REDES.md) | Diagrama académico; no describe la infraestructura desplegada. |
+| [Cambios](./CAMBIOS.md) | Resumen funcional y archivos de referencia. |
+| [Diario](./docs/DIARIO.md) | Registro histórico del trabajo del equipo. |
+
+También puedes consultar el [manual de usuario en PDF](./docs/GUIA_DE_USUARIO.pdf).
 
 Consulta la [guía de usuario en PDF](./docs/GUIA_DE_USUARIO.pdf) o la [versión en Markdown](./GUIA.md).
 
@@ -91,7 +106,7 @@ Ejecuta las pruebas automatizadas desde la raíz del proyecto:
 python -m unittest discover -s tests -v
 ```
 
-Las 47 pruebas automatizadas actuales validan las rutas principales, la autenticación, el perfil, el escape del contenido HTML, el manejo de errores de MongoDB y las reglas de los modelos, sin necesitar una conexión a MongoDB.
+Las pruebas automatizadas validan las rutas principales, la autenticación, el perfil, el escape del contenido HTML, el manejo de errores de MongoDB y las reglas de los modelos, sin necesitar una conexión a MongoDB.
 
 
 ## 🧰 Tecnologías
@@ -111,17 +126,24 @@ estudi-web/
 ├── modelos.py
 ├── usuarios.py
 ├── requirements.txt
+├── .env.example
 ├── README.md
+├── GUIA.md
 ├── CAMBIOS.md
 ├── REDES.md
 ├── SECURITY.md
 ├── docs/
+│   ├── ARQUITECTURA.md
+│   ├── DIARIO.md
+│   ├── MODELO_DATOS.md
 │   └── GUIA_DE_USUARIO.pdf
 ├── images/
 ├── static/
 │   ├── css/
 │   ├── images/
 │   └── js/
+│       ├── app.js
+│       └── DOCUMENTACION_FRONTEND.md
 ├── templates/
 └── tests/
 ```
@@ -134,6 +156,7 @@ estudi-web/
 | `modelos.py` | Define las categorías y tareas, sus validaciones y `RepositorioTareas`, que lee y escribe tareas en MongoDB. |
 | `usuarios.py` | Define el modelo `Usuario` y `RepositorioUsuarios`, que registran y autentican cuentas y guardan sus datos de perfil. |
 | `requirements.txt` | Lista las dependencias de Python que se instalan con `pip`. |
+| `.env.example` | Plantilla sin credenciales reales para crear la configuración local `.env`. |
 | `README.md` | Documentación principal: funciones, instalación, configuración, pruebas y estructura del proyecto. |
 | `CAMBIOS.md` | Resumen del estado, los componentes y los controles actuales del proyecto. |
 | `REDES.md` | Documenta el diagrama y la propuesta de topología de red del proyecto. |
@@ -214,21 +237,21 @@ Guarda la configuración privada en `.env` en la raíz del proyecto. `.gitignore
    python -m pip install -r requirements.txt
    ```
 
-4. Crea tu archivo local de configuración:
+4. Copia la plantilla de configuración y completa sus valores:
 
    **Windows PowerShell**
 
    ```powershell
-   New-Item -Path .env -ItemType File
+   Copy-Item .env.example .env
    ```
 
    **macOS o Linux**
 
    ```bash
-   touch .env
+   cp .env.example .env
    ```
 
-   Abre `.env` y agrega `MONGO_URI` con la URI de tu clúster de Atlas.
+   Edita `.env` y reemplaza los marcadores de `MONGO_URI` con la URI de tu clúster de Atlas.
 
    Si quieres separar las cuentas en otro clúster, también puedes definir `USUARIOS_URI`. Para producción, define además una `FLASK_SECRET_KEY` persistente y secreta; no habilites `FLASK_DEBUG`.
 

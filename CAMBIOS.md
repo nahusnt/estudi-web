@@ -1,6 +1,6 @@
 # Estado actual del proyecto
 
-Este documento resume las partes principales de Estudi Web para orientar el trabajo en el repositorio. La guía de instalación y la descripción completa de carpetas están en `README.md`.
+Este documento resume las partes principales de Estudi Web para orientar el trabajo en el repositorio. La instalación y el mapa general están en [`README.md`](./README.md); los documentos técnicos detallados se enlazan al final de esta página.
 
 ## Funcionalidades actuales
 
@@ -25,7 +25,14 @@ Este documento resume las partes principales de Estudi Web para orientar el trab
 | `static/css/styles.css` | Diseño visual, temas y responsive. |
 | `static/js/app.js` | Preferencias locales y comportamiento del frontend. |
 | `tests/test_app.py` | Pruebas de rutas, modelos, repositorios y controles de seguridad. |
-| `docs/` | Arquitectura, modelo de datos y diario. |
+| `docs/` | Arquitectura, modelo de datos, diario y manual PDF. |
+
+## Documentación del proyecto
+
+- [Guía de usuario](./GUIA.md) y [manual PDF](./docs/GUIA_DE_USUARIO.pdf).
+- [Arquitectura](./docs/ARQUITECTURA.md), [modelo de datos](./docs/MODELO_DATOS.md) y [frontend](./static/js/DOCUMENTACION_FRONTEND.md).
+- [Seguridad](./SECURITY.md) y [propuesta académica de red](./REDES.md).
+- [Registro histórico del trabajo](./docs/DIARIO.md).
 
 ## Datos y configuración
 

@@ -1,3 +1,4 @@
+{# Macro reutilizable para mostrar la identidad y el cierre de sesión de la cuenta activa. #}
 {% macro sidebar_user(class_name='') %}
 <div class="sidebar-user{% if class_name %} {{ class_name }}{% endif %}">
     <div class="sidebar-user-identity">
@@ -19,6 +20,7 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark" data-layout="extended">
 <head>
+    <!-- Metadatos, recursos visuales y script principal de la interfaz autenticada. -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0b0a1a">
@@ -36,6 +38,7 @@
     <div class="bg-orb bg-orb-two" aria-hidden="true"></div>
 
     <main class="app-shell">
+        <!-- Navegación entre secciones y tarjeta de la cuenta actual. -->
         <aside class="sidebar">
             <a class="sidebar-brand" href="{{ url_for('index', seccion='resumen') }}" aria-label="Estudi Web, ir al resumen">
                 <span class="brand-logo" role="img" aria-label="Logo de Estudi Web"></span>
@@ -60,6 +63,7 @@
         </aside>
 
         <div class="main-content">
+        <!-- Título contextual y control rápido para alternar el tema. -->
         <header class="page-header">
             <div class="page-context">
                 <p class="breadcrumb">Espacio <span aria-hidden="true">/</span>
@@ -85,6 +89,7 @@
 
         <div class="page-content">
 
+        <!-- Mensajes temporales que informan el resultado de las acciones del servidor. -->
         {% with mensajes = get_flashed_messages(with_categories=true) %}
             {% if mensajes %}
                 <div class="messages" aria-live="polite">
@@ -95,6 +100,7 @@
             {% endif %}
         {% endwith %}
 
+        <!-- Sección de tareas: creación, filtros, orden y acciones sobre cada elemento. -->
         <div {% if seccion != "crear" %}hidden{% endif %}>
             <section class="panel glass create-panel" aria-labelledby="create-title">
                 <h2 id="create-title">Agregar una tarea</h2>
@@ -223,6 +229,7 @@
             </section>
         </div>
 
+        <!-- Resumen agregado con progreso, categorías y fechas límite. -->
         <section class="summary-section" aria-labelledby="summary-title" {% if seccion != "resumen" %}hidden{% endif %}>
             <div class="panel glass">
                 <div class="list-heading">
@@ -317,6 +324,7 @@
             </div>
         </section>
 
+        <!-- Datos editables de la cuenta y validaciones de entrada del perfil. -->
         <section class="profile-section" aria-labelledby="profile-title" {% if seccion != "perfil" %}hidden{% endif %}>
             {% if perfil %}
                 <div class="panel glass profile-panel">
@@ -374,6 +382,7 @@
             {% endif %}
         </section>
 
+        <!-- Preferencias locales de presentación, accesibilidad e idioma. -->
         <section class="settings-section" aria-labelledby="settings-title" {% if seccion != "ajustes" %}hidden{% endif %}>
             <div class="panel glass">
                 <h2 id="settings-title">Ajustes de la web</h2>
