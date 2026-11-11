@@ -31,6 +31,12 @@
 
 <p align="center"><sub>☀️ Tema claro · 🌙 Tema oscuro · Barra lateral con una sola tarjeta de perfil · Resumen de tareas</sub></p>
 
+### Red de laboratorio en Cisco Packet Tracer
+
+La topología que acompaña al proyecto está documentada junto con sus límites y pruebas en [Documentación de Redes](REDES.md). La simulación editable está disponible en [Simulación Cisco Packet Tracer](EstudiWeb_Redes.pkt).
+
+![Topología de red simulada para Estudi Web](capturas/01-topologia.png)
+
 <a id="android"></a>
 
 ## 📱 También en Android
@@ -69,7 +75,7 @@ La documentación se mantiene en varios archivos, según el público y el tema:
 | [Modelo de datos](./docs/MODELO_DATOS.md) | Colecciones, campos, validaciones e índices de MongoDB. |
 | [Frontend](./static/js/DOCUMENTACION_FRONTEND.md) | Plantillas, estilos, preferencias e interacciones del navegador. |
 | [Seguridad](./SECURITY.md) | Controles presentes y medidas pendientes para producción. |
-| [Propuesta de red](./REDES.md) | Diagrama académico; no describe la infraestructura desplegada. |
+| [Documentación de Redes](REDES.md) | Topología simulada, direccionamiento, VLAN, ACL, servicios y pruebas de Cisco Packet Tracer. |
 | [Cambios](./CAMBIOS.md) | Resumen funcional y archivos de referencia. |
 | [Diario](./docs/DIARIO.md) | Registro histórico del trabajo del equipo. |
 
@@ -113,8 +119,14 @@ Las pruebas automatizadas validan las rutas principales, la autenticación, el p
 
 | Aplicación | Datos |
 | --- | --- |
-| Python y Flask | MongoDB Atlas y PyMongo |
+| Python, Flask y plantillas Jinja | MongoDB Atlas y PyMongo |
 | HTML, CSS y JavaScript | Variables de entorno con `python-dotenv` |
+| Servidor WSGI disponible | Gunicorn (incluido en `requirements.txt`) |
+| Simulación de red | Cisco Packet Tracer (router 2911, switch 2960 y cinco VLAN) |
+
+### Arquitectura general
+
+Flask sirve las vistas Jinja y los recursos HTML, CSS y JavaScript; PyMongo conecta la aplicación con MongoDB usando la configuración del entorno. La red de Cisco Packet Tracer es una simulación académica separada: sus servidores representan HTTP/DNS y una red de base de datos, pero no ejecutan esta aplicación Flask ni MongoDB. Consulta [Documentación de Redes](REDES.md) para el detalle de la simulación.
 
 ## 📁 Estructura del proyecto
 
@@ -132,6 +144,15 @@ estudi-web/
 ├── CAMBIOS.md
 ├── REDES.md
 ├── SECURITY.md
+├── EstudiWeb_Redes.pkt
+├── capturas/
+│   ├── 01-topologia.png
+│   ├── 02-vlans.png
+│   ├── 03-dhcp.png
+│   ├── 04-conectividad.png
+│   ├── 05-servidor-web.png
+│   ├── 06-acl.png
+│   └── 07-acceso-bloqueado.png
 ├── docs/
 │   ├── ARQUITECTURA.md
 │   ├── DIARIO.md
@@ -159,7 +180,8 @@ estudi-web/
 | `.env.example` | Plantilla sin credenciales reales para crear la configuración local `.env`. |
 | `README.md` | Documentación principal: funciones, instalación, configuración, pruebas y estructura del proyecto. |
 | `CAMBIOS.md` | Resumen del estado, los componentes y los controles actuales del proyecto. |
-| `REDES.md` | Documenta el diagrama y la propuesta de topología de red del proyecto. |
+| `REDES.md` | Documenta la simulación Cisco Packet Tracer, sus evidencias y los puntos pendientes de verificación. |
+| `EstudiWeb_Redes.pkt` | Archivo editable de la simulación de red. |
 | `SECURITY.md` | Describe amenazas de seguridad identificadas y recomendaciones de mitigación. |
 | `.gitignore` | Indica qué archivos locales o generados Git debe ignorar, como `.env`, los entornos virtuales y `__pycache__`. |
 
@@ -168,7 +190,8 @@ estudi-web/
 | Carpeta | Contenido |
 |---|---|
 | `docs/` | Documentación de arquitectura (`ARQUITECTURA.md`), modelo de datos (`MODELO_DATOS.md`), diario (`DIARIO.md`) y manual de usuario en PDF. |
-| `images/` | Recursos para documentación y presentación: capturas de la interfaz en temas claro y oscuro, y el diagrama de red usado en `REDES.md`. |
+| `capturas/` | Siete evidencias reales de topología, VLAN, DHCP, conectividad, HTTP, ACL y acceso bloqueado, referenciadas en `REDES.md`. |
+| `images/` | Ilustraciones de demostración de la aplicación y un diagrama de red previo; la topología real de Packet Tracer se muestra en `capturas/`. |
 | `static/css/` | Hojas de estilo del navegador. `styles.css` contiene los temas, componentes y reglas responsive. |
 | `static/images/` | Imágenes que usa la interfaz, como el logotipo (`logo.png` y `logo-waves.svg`). |
 | `static/js/` | JavaScript del navegador (`app.js`) y su documentación (`DOCUMENTACION_FRONTEND.md`); gestiona preferencias e interacciones de la interfaz y documenta el manejo seguro de contenido dinámico. |

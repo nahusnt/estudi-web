@@ -54,6 +54,14 @@ Los documentos creados antes de incorporar cuentas pueden carecer de `usuario_id
 
 La aplicación limita el tamaño total de las solicitudes y valida el tamaño y la firma binaria de las imágenes aceptadas. Esta comprobación identifica formatos comunes, pero no sustituye un servicio de análisis de archivos ni una política de retención si se habilitan cargas públicas en el futuro.
 
+## Controles de la simulación de red
+
+La red de Cisco Packet Tracer se documenta por separado en [REDES.md](./REDES.md). Sus ACL y segmentación representan controles complementarios contra el acceso no autorizado a servidores y a la red de base de datos simulada. No constituyen una configuración de red de producción ni reemplazan la lista de acceso de red de MongoDB Atlas: la aplicación real debe protegerse con reglas de red y credenciales configuradas en el proveedor de MongoDB.
+
+La ACL de invitados bloquea el acceso a las subredes de servidores y base de datos; la ACL de base de datos permite TCP/27017 únicamente desde el host de aplicación simulado y deniega otros orígenes hacia el host de datos. Estas reglas se relacionan con el riesgo de acceso de red no autorizado a los datos. El acceso SSH v2 y el banner del router reducen la exposición de la administración del dispositivo de laboratorio; no se confirma en la evidencia el cifrado de las contraseñas de configuración.
+
+Los resultados y límites de estas pruebas están en la sección **Integración Redes + Seguridad** de [REDES.md](./REDES.md). Packet Tracer no ejecuta Flask ni MongoDB real.
+
 ## Uso local
 
 El servidor de desarrollo es para desarrollo local únicamente. No exponer ese servidor directamente a Internet ni activar debug en producción.

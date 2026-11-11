@@ -4,6 +4,8 @@ Estudi Web es una aplicación web Flask con plantillas Jinja, CSS y JavaScript e
 
 Para instalarla y ejecutarla, consulta [README.md](../README.md). La guía de uso está en [GUIA.md](../GUIA.md) y los controles pendientes de producción se detallan en [SECURITY.md](../SECURITY.md).
 
+La topología de Cisco Packet Tracer es un recurso de simulación independiente de esta arquitectura de software. Sus servidores ilustran servicios de red y no ejecutan la aplicación Flask ni MongoDB; consulta la [documentación de redes](../REDES.md) y el [archivo de simulación](../EstudiWeb_Redes.pkt).
+
 ## Componentes
 
 - **`app.py`** configura Flask, carga `.env`, crea las conexiones MongoDB y los repositorios, protege las rutas con una comprobación de sesión y define los flujos de registro, inicio/cierre de sesión, perfil y tareas. También calcula las métricas y fechas que se muestran en el resumen y responde a errores de MongoDB con un mensaje genérico mientras registra el detalle en el servidor. El modo debug está desactivado por defecto.
@@ -12,7 +14,7 @@ Para instalarla y ejecutarla, consulta [README.md](../README.md). La guía de us
 - **`templates/`** contiene las vistas Jinja: `login.html`, `registro.html` e `index.html`. La vista principal presenta las secciones de tareas, resumen, ajustes y perfil; la tarjeta de cuenta aparece una sola vez al final de la barra lateral.
 - **`static/css/styles.css`** define temas, paletas, componentes, las disposiciones compacta y extendida, y los ajustes responsive.
 - **`static/js/app.js`** aplica las preferencias del navegador, cambia tema, idioma, disposición, contraste, tamaño y densidad del texto/listado, y gestiona interacciones como confirmaciones y visibilidad de contraseñas.
-- **`static/images/`** contiene recursos de interfaz, como el logotipo. **`images/`** contiene las ilustraciones de demostración y el diagrama de red de la documentación.
+- **`static/images/`** contiene recursos de interfaz, como el logotipo. **`images/`** contiene ilustraciones de demostración y `diagrama-redes.png`, un diagrama previo que no representa la simulación documentada en `REDES.md`; las evidencias actuales están en `capturas/`.
 - **`tests/test_app.py`** contiene las pruebas automatizadas; los repositorios se simulan para no depender de una base real durante la suite.
 
 ## Persistencia

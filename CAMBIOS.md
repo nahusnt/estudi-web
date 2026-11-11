@@ -26,12 +26,13 @@ Este documento resume las partes principales de Estudi Web para orientar el trab
 | `static/js/app.js` | Preferencias locales y comportamiento del frontend. |
 | `tests/test_app.py` | Pruebas de rutas, modelos, repositorios y controles de seguridad. |
 | `docs/` | Arquitectura, modelo de datos, diario y manual PDF. |
+| `EstudiWeb_Redes.pkt`, `capturas/` | Simulación de red editable y sus siete evidencias visuales, documentadas en `REDES.md`. |
 
 ## Documentación del proyecto
 
 - [Guía de usuario](./GUIA.md) y [manual PDF](./docs/GUIA_DE_USUARIO.pdf).
 - [Arquitectura](./docs/ARQUITECTURA.md), [modelo de datos](./docs/MODELO_DATOS.md) y [frontend](./static/js/DOCUMENTACION_FRONTEND.md).
-- [Seguridad](./SECURITY.md) y [propuesta académica de red](./REDES.md).
+- [Seguridad](./SECURITY.md) y [documentación de la simulación Cisco Packet Tracer](./REDES.md).
 - [Registro histórico del trabajo](./docs/DIARIO.md).
 
 ## Datos y configuración
