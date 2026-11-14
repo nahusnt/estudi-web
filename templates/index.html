@@ -1,14 +1,15 @@
 {# Macro reutilizable para mostrar la identidad y el cierre de sesión de la cuenta activa. #}
+{# [XSS] Los campos sanitizados en Python (usuario_nombre, tarea.titulo/descripcion, perfil.nombre/descripcion) se renderizan con |safe: ya vienen escapados desde el modelo, así Jinja no debe volver a escaparlos (evita el doble-escape). #}
 {% macro sidebar_user(class_name='') %}
 <div class="sidebar-user{% if class_name %} {{ class_name }}{% endif %}">
     <div class="sidebar-user-identity">
         {% if usuario_foto_perfil %}
-            <img class="sidebar-user-avatar" src="{{ usuario_foto_perfil }}" alt="Foto de perfil de {{ usuario_nombre or usuario_correo }}">
+            <img class="sidebar-user-avatar" src="{{ usuario_foto_perfil }}" alt="Foto de perfil de {{ (usuario_nombre or usuario_correo)|safe }}">
         {% else %}
-            <span class="sidebar-user-avatar-fallback" aria-hidden="true">{{ (usuario_nombre or usuario_nombre_usuario or usuario_correo)[:1]|upper }}</span>
+            <span class="sidebar-user-avatar-fallback" aria-hidden="true">{{ (usuario_nombre or usuario_nombre_usuario or usuario_correo)[:1]|safe|upper }}</span>
         {% endif %}
         <div class="sidebar-user-details">
-            <span class="sidebar-user-name" title="{{ usuario_nombre }}">{{ usuario_nombre or usuario_correo }}</span>
+            <span class="sidebar-user-name" title="{{ usuario_nombre|safe }}">{{ (usuario_nombre or usuario_correo)|safe }}</span>
             <span class="sidebar-user-mail" title="{{ usuario_correo }}">{% if usuario_nombre_usuario %}@{{ usuario_nombre_usuario }}{% else %}{{ usuario_correo }}{% endif %}</span>
         </div>
     </div>
@@ -191,13 +192,13 @@
                                         <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
                                     {% endfor %}
                                     <label class="checkbox-label">
-                                        <input type="checkbox" data-task-title="{{ tarea.titulo }}" data-completed="{{ 'true' if tarea.completada else 'false' }}" aria-label="Marcar {{ tarea.titulo }} como {% if tarea.completada %}pendiente{% else %}terminada{% endif %}" {% if tarea.completada %}checked{% endif %} onchange="this.form.submit()">
+                                        <input type="checkbox" data-task-title="{{ tarea.titulo|safe }}" data-completed="{{ 'true' if tarea.completada else 'false' }}" aria-label="Marcar {{ tarea.titulo|safe }} como {% if tarea.completada %}pendiente{% else %}terminada{% endif %}" {% if tarea.completada %}checked{% endif %} onchange="this.form.submit()">
                                     </label>
                                 </form>
                                 <div class="task-content">
-                                    <span class="task-title">{{ tarea.titulo }}</span>
+                                    <span class="task-title">{{ tarea.titulo|safe }}</span>
                                     {% if tarea.descripcion %}
-                                        <p class="task-description">{{ tarea.descripcion }}</p>
+                                        <p class="task-description">{{ tarea.descripcion|safe }}</p>
                                     {% endif %}
                                     <div class="task-meta">
                                         <span class="category-badge">{{ tarea.categoria }}</span>
@@ -214,7 +215,7 @@
                                     {% for nombre, valor in filtros.items() %}
                                         <input type="hidden" name="{{ nombre }}" value="{{ valor }}">
                                     {% endfor %}
-                                    <button class="button button-delete" type="submit" data-task-title="{{ tarea.titulo }}" aria-label="Eliminar {{ tarea.titulo }}" title="Eliminar tarea">Eliminar</button>
+                                    <button class="button button-delete" type="submit" data-task-title="{{ tarea.titulo|safe }}" aria-label="Eliminar {{ tarea.titulo|safe }}" title="Eliminar tarea">Eliminar</button>
                                 </form>
                             </li>
                         {% endfor %}
@@ -296,7 +297,7 @@
                             {% for tarea in tareas_vencidas_lista %}
                                 <li>
                                     <span class="upcoming-task">
-                                        <strong>{{ tarea.titulo }}</strong>
+                                        <strong>{{ tarea.titulo|safe }}</strong>
                                         <small>{{ tarea.categoria }}</small>
                                     </span>
                                     <time datetime="{{ tarea.fecha_vencimiento.isoformat() }}">{{ tarea.fecha_vencimiento.strftime("%d/%m/%Y") }}</time>
@@ -310,7 +311,7 @@
                             {% for tarea in tareas_por_vencer %}
                                 <li>
                                     <span class="upcoming-task">
-                                        <strong>{{ tarea.titulo }}</strong>
+                                        <strong>{{ tarea.titulo|safe }}</strong>
                                         <small>{{ tarea.categoria }}</small>
                                     </span>
                                     <time datetime="{{ tarea.fecha_vencimiento.isoformat() }}">{{ tarea.fecha_vencimiento.strftime("%d/%m/%Y") }}</time>
@@ -330,15 +331,15 @@
                 <div class="panel glass profile-panel">
                     <div class="profile-heading">
                         {% if perfil.foto_perfil %}
-                            <img class="profile-avatar" src="{{ perfil.foto_perfil }}" alt="Foto de perfil de {{ perfil.nombre }}">
+                            <img class="profile-avatar" src="{{ perfil.foto_perfil }}" alt="Foto de perfil de {{ perfil.nombre|safe }}">
                         {% else %}
-                            <div class="profile-avatar profile-avatar-placeholder" aria-hidden="true">{{ perfil.nombre[:1]|upper }}</div>
+                            <div class="profile-avatar profile-avatar-placeholder" aria-hidden="true">{{ perfil.nombre[:1]|safe|upper }}</div>
                         {% endif %}
                         <div class="profile-heading-copy">
                             <p class="eyebrow">Perfil de cuenta</p>
-                            <h2 id="profile-title">{{ perfil.nombre }}</h2>
+                            <h2 id="profile-title">{{ perfil.nombre|safe }}</h2>
                             <p class="profile-handle">{% if perfil.nombre_usuario %}@{{ perfil.nombre_usuario }}{% else %}Elige tu nombre de usuario{% endif %}</p>
-                            <p class="profile-description">{{ perfil.descripcion or "Todavía no agregaste una descripción." }}</p>
+                            <p class="profile-description">{{ (perfil.descripcion or "Todavía no agregaste una descripción.")|safe }}</p>
                             {% if perfil.etiquetas %}
                                 <div class="profile-tags" aria-label="Etiquetas del perfil">
                                     {% for etiqueta in perfil.etiquetas %}<span class="profile-tag">#{{ etiqueta }}</span>{% endfor %}
@@ -354,11 +355,11 @@
                             </label>
                             <label class="field">
                                 <span>Nombre visible</span>
-                                <input type="text" name="nombre" value="{{ perfil.nombre }}" maxlength="60" required autocomplete="name">
+                                <input type="text" name="nombre" value="{{ perfil.nombre|safe }}" maxlength="60" required autocomplete="name">
                             </label>
                             <label class="field profile-field-wide">
                                 <span>Descripción</span>
-                                <textarea name="descripcion" rows="4" maxlength="280" placeholder="Cuéntanos algo sobre ti">{{ perfil.descripcion }}</textarea>
+                                <textarea name="descripcion" rows="4" maxlength="280" placeholder="Cuéntanos algo sobre ti">{{ perfil.descripcion|safe }}</textarea>
                             </label>
                             <label class="field profile-field-wide">
                                 <span>Etiquetas personalizadas</span>

@@ -69,8 +69,11 @@ class RutasTareasTest(unittest.TestCase):
         )
         self.repo.listar_etiquetas.assert_called_once_with()
 
-    def test_texto_de_tarea_se_escapa_al_renderizarse(self):
+    def test_texto_de_tarea_se_sanitiza_en_la_entrada(self):
+        # [XSS] El título con etiquetas HTML se sanitiza con html.escape ANTES de
+        # guardarse en MongoDB (no se confía solo en el autoescape de Jinja).
         texto_usuario = "<script>alert(1)</script>"
+        texto_sanitizado = "&lt;script&gt;alert(1)&lt;/script&gt;"
         respuesta_agregar = self.client.post(
             "/agregar",
             data={"titulo": texto_usuario, "categoria": "Personal"},
@@ -82,9 +85,13 @@ class RutasTareasTest(unittest.TestCase):
         respuesta_vista = self.client.get("/")
 
         self.assertEqual(respuesta_agregar.status_code, 302)
-        self.assertEqual(tarea.titulo, texto_usuario)
+        # El título se guarda YA escapado (sanitizado en Python, no crudo).
+        self.assertEqual(tarea.titulo, texto_sanitizado)
         self.assertEqual(respuesta_vista.status_code, 200)
-        self.assertIn(b"&lt;script&gt;alert(1)&lt;/script&gt;", respuesta_vista.data)
+        # Al renderizar con |safe se emite el texto escapado: el navegador lo dibuja
+        # como texto plano "<script>...</script>" y NO ejecuta el script.
+        self.assertIn(texto_sanitizado.encode(), respuesta_vista.data)
+        # El payload crudo nunca llega al HTML de respuesta.
         self.assertNotIn(texto_usuario.encode(), respuesta_vista.data)
 
     def test_error_de_mongodb_devuelve_mensaje_generico_y_registra_detalle(self):
@@ -289,6 +296,13 @@ class RutasTareasTest(unittest.TestCase):
         self.assertEqual(respuesta.status_code, 404)
         self.repo.cambiar_estado.assert_not_called()
         self.repo.eliminar.assert_not_called()
+
+    def test_404_no_revela_stack_trace(self):
+        # [EXCEPCIONES] Una ruta inexistente devuelve el 404 personalizado, sin stack trace.
+        respuesta = self.client.get("/ruta-que-no-existe-xyz")
+        self.assertEqual(respuesta.status_code, 404)
+        self.assertIn(b"no existe", respuesta.data)
+        self.assertNotIn(b"Traceback", respuesta.data)
 
 
 class ModeloUsuarioTest(unittest.TestCase):
@@ -731,6 +745,38 @@ class RepositorioUsuariosTest(unittest.TestCase):
         self.assertEqual(usuario.correo, "alumno@test.com")
         self.assertIsNone(usuario.nombre_usuario)
         self.assertEqual(usuario.nombre, "alumno")
+
+
+class SeguridadParte3Test(unittest.TestCase):
+    """Verifica los controles defensivos de la Parte 3: sanitización, hashing y debug."""
+
+    def test_sanitizar_es_idempotente_y_seguro(self):
+        # [XSS] sanitizar escapa <, >, &, " y no duplica escapes al re-aplicarse.
+        from security_utils import sanitizar
+        self.assertEqual(sanitizar("<script>"), "&lt;script&gt;")
+        self.assertEqual(sanitizar('a"b'), "a&quot;b")
+        self.assertEqual(sanitizar("texto plano"), "texto plano")
+        # Idempotente: re-aplicar no degrada un valor ya escapado (evita doble escape).
+        self.assertEqual(sanitizar(sanitizar("<b>x</b>")), sanitizar("<b>x</b>"))
+        # No rompe con valores no-texto.
+        self.assertEqual(sanitizar(None), "")
+        self.assertEqual(sanitizar(123), "")
+
+    def test_contrasena_no_se_escapa_se_hashea(self):
+        # [HASHING] La contraseña con caracteres HTML se hashea tal cual (NO se escapa):
+        # si se escapara, el hash no coincidiría con la entrada y el login fallaría.
+        usuario = Usuario("alumno@test.com", contrasena="cl<ave>1")
+        datos = usuario.a_diccionario()
+        self.assertNotIn("cl<ave>1", datos["contrasena_hash"])
+        self.assertTrue(usuario.verificar_contrasena("cl<ave>1"))
+        self.assertFalse(usuario.verificar_contrasena("otra-clave"))
+
+    def test_app_run_debug_false_en_fuente(self):
+        # [EXCEPCIONES] debug=False hardcoded para la demo (sin override de FLASK_DEBUG).
+        import inspect
+        fuente = inspect.getsource(app_module)
+        self.assertIn("app.run(debug=False)", fuente)
+        self.assertNotIn('os.getenv("FLASK_DEBUG"', fuente)
 
 
 if __name__ == "__main__":

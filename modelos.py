@@ -5,6 +5,8 @@ from datetime import date
 
 from bson import ObjectId
 
+from security_utils import sanitizar  # [XSS] helper de sanitización de entrada.
+
 
 class Categoria:
     """Valida y representa una de las categorías admitidas por la aplicación."""
@@ -53,7 +55,11 @@ class Tarea:
             )
 
         self.__id = id_tarea
-        self.__titulo = titulo
+        # [XSS] Sanitización de entrada: el título es texto libre del usuario, así que
+        # se escapa con html.escape (vía sanitizar) ANTES de guardarlo en MongoDB.
+        # La longitud se valida sobre el texto crudo (recortado) para preservar el
+        # límite de 120 caracteres que impone el formulario HTML.
+        self.__titulo = sanitizar(titulo)
         self.__completada = completada
         self.__categoria = (
             categoria if isinstance(categoria, Categoria) else Categoria(categoria)
@@ -64,13 +70,14 @@ class Tarea:
 
     @staticmethod
     def _validar_descripcion(descripcion):
-        """Recorta y limita la descripción opcional."""
+        """Recorta, limita y sanitiza la descripción opcional."""
         if not isinstance(descripcion, str):
             raise ValueError("La descripción debe ser texto.")
         descripcion = descripcion.strip()
         if len(descripcion) > 500:
             raise ValueError("La descripción debe tener 500 caracteres como máximo.")
-        return descripcion
+        # [XSS] La descripción es texto libre: se escapa antes de persistirla.
+        return sanitizar(descripcion)
 
     @staticmethod
     def _validar_fecha(fecha_vencimiento):
@@ -112,6 +119,8 @@ class Tarea:
             raise ValueError(
                 "Usa hasta 5 etiquetas de 20 caracteres; puedes escribirlas como #trabajo."
             )
+        # Las etiquetas se validan con una expresión regular estricta ([\w-]) que no
+        # permite caracteres HTML, por lo que no requieren sanitización adicional.
         return etiquetas_normalizadas
 
     @property
@@ -121,7 +130,7 @@ class Tarea:
 
     @property
     def titulo(self):
-        """Devuelve el título validado."""
+        """Devuelve el título validado y sanitizado."""
         return self.__titulo
 
     @property
@@ -141,7 +150,7 @@ class Tarea:
 
     @property
     def descripcion(self):
-        """Devuelve la descripción normalizada."""
+        """Devuelve la descripción normalizada y sanitizada."""
         return self.__descripcion
 
     @property
@@ -190,6 +199,8 @@ class RepositorioTareas:
     def cargar_todas(self, estado=None, categoria=None, etiqueta=None, orden="recientes", usuario_id=None):
         """Filtra y ordena tareas, aplicando valores compatibles a documentos antiguos."""
         # Recupera solo los campos usados por la vista y evita una lista intermedia.
+        # [IDOR] El filtro por usuario_id restringe la consulta a las tareas propias del
+        # usuario autenticado: nunca se exponen ni modifican tareas de otros usuarios.
         filtros = {}
         if usuario_id:
             filtros["usuario_id"] = usuario_id
@@ -242,7 +253,9 @@ class RepositorioTareas:
     def cambiar_estado(self, id_tarea, usuario_id=None):
         """Invierte el estado en MongoDB y opcionalmente restringe por propietario."""
         # Invierte el estado de forma atomica en una sola operacion de MongoDB.
-        # El usuario_id limita la operacion a tareas propias.
+        # [IDOR] El usuario_id limita la operacion a tareas propias: combinado con la
+        # validación de ObjectId (validar_id_tarea en app.py) evita el acceso a tareas
+        # ajenas manipulando el ID de la ruta (Broken Access Control / IDOR).
         consulta = {"_id": ObjectId(id_tarea)}
         if usuario_id:
             consulta["usuario_id"] = usuario_id
@@ -261,6 +274,8 @@ class RepositorioTareas:
 
     def eliminar(self, id_tarea, usuario_id=None):
         """Elimina la tarea indicada, restringiendo la consulta al propietario si se recibe."""
+        # [IDOR] Igual que cambiar_estado: el filtro por usuario_id garantiza que solo
+        # el propietario pueda borrar su propia tarea.
         consulta = {"_id": ObjectId(id_tarea)}
         if usuario_id:
             consulta["usuario_id"] = usuario_id

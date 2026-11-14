@@ -5,6 +5,8 @@ import re
 from bson import ObjectId
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from security_utils import sanitizar  # [XSS] helper de sanitización de entrada.
+
 # Formato esperado: nombre@dominio.ext (sin espacios).
 CORREO_VALIDO = re.compile(r"^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$")
 NOMBRE_USUARIO_VALIDO = re.compile(r"^[A-Za-z0-9_-]{3,24}$")
@@ -29,11 +31,17 @@ class Usuario:
     ):
         """Normaliza el correo y construye una cuenta con campos de perfil válidos."""
         correo = correo.strip().lower() if isinstance(correo, str) else ""
+        # El correo se valida con una expresión regular estricta que no permite
+        # caracteres HTML, por lo que no requiere sanitización adicional.
         if not CORREO_VALIDO.fullmatch(correo):
             raise ValueError("Ingresa un correo válido, por ejemplo nombre@dominio.com.")
 
         if contrasena_hash is None:
-            # La contraseña en texto plano nunca se almacena: solo su hash irreversible.
+            # [HASHING] La contraseña en texto plano nunca se almacena: solo su hash
+            # irreversible generado con werkzeug.security.generate_password_hash.
+            # IMPORTANTE: la contraseña NO se sanitiza con html.escape, porque eso
+            # alteraría su valor y rompería la verificación en el login. Se hashea tal
+            # cual la ingresa el usuario.
             if not isinstance(contrasena, str) or len(contrasena) < 8:
                 raise ValueError("La contraseña debe tener al menos 8 caracteres.")
             self.__hash = generate_password_hash(contrasena)
@@ -42,6 +50,7 @@ class Usuario:
 
         self.__correo = correo
         self.__id = id_usuario
+        # El nombre de usuario se valida con regex ([A-Za-z0-9_-]): sin HTML posible.
         self.__nombre_usuario = self._validar_nombre_usuario(nombre_usuario) if nombre_usuario else None
         nombre_inicial = nombre if nombre is not None else self.__nombre_usuario or correo.split("@", 1)[0]
         self.__nombre = self._validar_nombre(nombre_inicial)
@@ -66,23 +75,25 @@ class Usuario:
 
     @staticmethod
     def _validar_nombre(nombre):
-        """Recorta y valida el nombre visible obligatorio."""
+        """Recorta, valida y sanitiza el nombre visible obligatorio."""
         if not isinstance(nombre, str):
             raise ValueError("El nombre visible es obligatorio y debe tener 60 caracteres como máximo.")
         nombre = nombre.strip()
         if not nombre or len(nombre) > 60:
             raise ValueError("El nombre visible es obligatorio y debe tener 60 caracteres como máximo.")
-        return nombre
+        # [XSS] El nombre visible es texto libre: se escapa antes de persistirlo.
+        return sanitizar(nombre)
 
     @staticmethod
     def _validar_descripcion(descripcion):
-        """Valida el texto de descripción y aplica el máximo de caracteres."""
+        """Valida el texto de descripción, aplica el máximo y sanitiza."""
         if not isinstance(descripcion, str):
             raise ValueError("La descripción debe ser texto.")
         descripcion = descripcion.strip()
         if len(descripcion) > 280:
             raise ValueError("La descripción debe tener 280 caracteres como máximo.")
-        return descripcion
+        # [XSS] La descripción del perfil es texto libre: se escapa antes de persistirla.
+        return sanitizar(descripcion)
 
     @staticmethod
     def _validar_etiquetas(etiquetas):
@@ -99,6 +110,7 @@ class Usuario:
             for etiqueta in etiquetas_normalizadas
         ):
             raise ValueError("Usa hasta 8 etiquetas de 24 caracteres, separadas por comas.")
+        # Las etiquetas se validan con regex ([\w-]): sin caracteres HTML posibles.
         return etiquetas_normalizadas
 
     @property
@@ -123,12 +135,12 @@ class Usuario:
 
     @property
     def nombre(self):
-        """Devuelve el nombre visible del perfil."""
+        """Devuelve el nombre visible del perfil (sanitizado)."""
         return self.__nombre
 
     @property
     def descripcion(self):
-        """Devuelve la descripción del perfil."""
+        """Devuelve la descripción del perfil (sanitizada)."""
         return self.__descripcion
 
     @property
@@ -143,6 +155,7 @@ class Usuario:
 
     def verificar_contrasena(self, contrasena):
         """Compara la contraseña proporcionada con el hash guardado."""
+        # [HASHING] check_password_hash verifica la contraseña sin almacenarla nunca.
         return check_password_hash(self.__hash, contrasena or "")
 
     def asignar_id(self, id_usuario):
@@ -152,6 +165,8 @@ class Usuario:
     def actualizar_perfil(self, nombre_usuario, nombre, descripcion, etiquetas, foto_perfil):
         """Valida y reemplaza los campos editables del perfil."""
         self.__nombre_usuario = self._validar_nombre_usuario(nombre_usuario)
+        # [XSS] Al re-validar nombre y descripcion se vuelve a aplicar sanitizar, que
+        # es idempotente: no degrada valores ya escapados en una edición anterior.
         self.__nombre = self._validar_nombre(nombre)
         self.__descripcion = self._validar_descripcion(descripcion)
         self.__etiquetas = self._validar_etiquetas(etiquetas)
@@ -161,6 +176,7 @@ class Usuario:
         """Serializa la cuenta sin incluir nunca la contraseña en texto plano."""
         datos = {
             "correo": self.__correo,
+            # [HASHING] Se persiste el hash, nunca la contraseña original.
             "contrasena_hash": self.__hash,
             "nombre": self.__nombre,
             "descripcion": self.__descripcion,
@@ -220,6 +236,7 @@ class RepositorioUsuarios:
 
     def buscar_por_id(self, id_usuario):
         """Busca por ObjectId y descarta identificadores con formato inválido."""
+        # [IDOR] La validación de ObjectId evita consultas con IDs manipulados.
         if not ObjectId.is_valid(id_usuario):
             return None
         documento = self.__coleccion.find_one({"_id": ObjectId(id_usuario)})
@@ -253,6 +270,7 @@ class RepositorioUsuarios:
     def autenticar(self, identificador, contrasena):
         """Devuelve la cuenta solo cuando el identificador y el hash coinciden."""
         usuario = self.buscar_por_identificador(identificador)
+        # [HASHING] Verifica la contraseña contra el hash almacenado (check_password_hash).
         if usuario and usuario.verificar_contrasena(contrasena):
             return usuario
         return None

@@ -1,4 +1,8 @@
 Flask>=3.0,<4.0
+# werkzeug viene incluido con Flask; provee generate_password_hash / check_password_hash
+# usados para el hashing de contraseñas (Parte 3). No requiere instalación aparte.
 pymongo[srv]>=4.6,<5.0
 python-dotenv>=1.0,<2.0
 gunicorn
+# Nota: 'html' (usado para sanitización XSS vía html.escape) es librería estándar de
+# Python, por lo que NO requiere agregarse a este archivo.
